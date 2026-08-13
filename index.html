@@ -324,6 +324,8 @@
             padding-right: 4px;
             flex: 1;
             max-height: 55vh;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
         .movie-overlay .movie-grid::-webkit-scrollbar {
             width: 5px;
@@ -345,6 +347,7 @@
             cursor: pointer;
             text-align: center;
             padding: 12px 10px 14px;
+            will-change: transform;
         }
         .movie-overlay .movie-grid .movie-card:hover {
             border-color: var(--accent-gold);
@@ -392,16 +395,16 @@
             right: 0;
             bottom: 0;
             z-index: 10;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             display: none;
             align-items: center;
             justify-content: center;
             padding: 24px;
             border-radius: var(--radius-xl);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.25s ease;
         }
         .movie-detail-overlay.active {
             display: flex;
@@ -411,18 +414,21 @@
             background: var(--surface);
             border-radius: var(--radius-lg);
             border: 1px solid var(--border-hover);
-            max-width: 480px;
+            max-width: 460px;
             width: 100%;
             padding: 28px 24px 24px;
             box-shadow: var(--shadow-lg);
-            animation: detailIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             max-height: 80vh;
             overflow-y: auto;
+            transform: scale(0.92) translateY(8px);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            opacity: 0;
+            will-change: transform, opacity;
         }
-        @keyframes detailIn {
-            from { opacity: 0; transform: scale(0.9) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        .movie-detail-overlay.active .detail-card {
+            transform: scale(1) translateY(0);
+            opacity: 1;
         }
         .movie-detail-overlay .detail-card .detail-close {
             position: absolute;
@@ -934,7 +940,7 @@
                 </div>
 
                 <!-- ===== MOVIE CAROUSEL ===== -->
-                <div class="movie-carousel" id="movieCarousel" title="Click to browse 2025 Amharic Movies">
+                <div class="movie-carousel" id="movieCarousel" title="Click to browse 2026 Amharic Movies">
                     <div class="carousel-label">
                         <span class="icon">🎬</span>
                     </div>
@@ -953,8 +959,8 @@
             <div class="modal" id="movieModal">
                 <div class="modal-header">
                     <h2>
-                        🎬 2025 Amharic Movies
-                        <span>— 10 new releases</span>
+                        🎬 2026 Amharic Movies
+                        <span>— 10 most viewed</span>
                     </h2>
                     <button class="close-btn" id="closeModalBtn" aria-label="Close movie browser">
                         <i class="fas fa-times"></i>
@@ -973,7 +979,7 @@
                         <img id="detailPoster" class="detail-poster" src="" alt="Movie poster" />
                         <div class="detail-title" id="detailTitle">Movie Title</div>
                         <div class="detail-meta">
-                            <span class="year" id="detailYear">2025</span>
+                            <span class="year" id="detailYear">2026</span>
                             <span class="genre" id="detailGenre">Drama</span>
                         </div>
                         <div class="detail-desc" id="detailDesc">
@@ -1136,20 +1142,102 @@
 
     <script>
         // ================================================================
-        // MOVIE DATA — 10 Amharic Movies (2025) with descriptions
+        // 🎬 MOVIE DATA — 10 Most Viewed Amharic Movies (2026)
         // ================================================================
 
         const movies2025 = [
-            { title: "ሰው ሰው", year: "2025", seed: "movie1", genre: "Drama", desc: "A powerful story of identity and belonging in modern Ethiopia. Follow the journey of a man torn between tradition and change." },
-            { title: "ቅንጣት", year: "2025", seed: "movie2", genre: "Romance", desc: "A tender love story that blossoms in the heart of Addis Ababa, capturing the beauty of connection and the pain of separation." },
-            { title: "እናት", year: "2025", seed: "movie3", genre: "Family", desc: "An emotional tribute to motherhood, exploring the sacrifices and unconditional love that bind a family together." },
-            { title: "ፍቅር በረራ", year: "2025", seed: "movie4", genre: "Love Story", desc: "A sweeping romance that takes flight against the backdrop of Ethiopia's breathtaking landscapes and vibrant culture." },
-            { title: "የልቤ ልብ", year: "2025", seed: "movie5", genre: "Drama", desc: "A deeply moving drama about loss, healing, and the resilience of the human heart in the face of tragedy." },
-            { title: "ሕልሜ", year: "2025", seed: "movie6", genre: "Inspiration", desc: "An inspiring tale of a young dreamer who defies all odds to achieve the impossible, lighting the way for others." },
-            { title: "አንቺ ልቤ", year: "2025", seed: "movie7", genre: "Romance", desc: "A poetic romance that explores the depths of love, with unforgettable performances and a soul-stirring score." },
-            { title: "በቃ", year: "2025", seed: "movie8", genre: "Comedy", desc: "A laugh-out-loud comedy that brings together a cast of characters in a series of hilarious and heartwarming situations." },
-            { title: "ፍቅር እንደ ተራ", year: "2025", seed: "movie9", genre: "Drama", desc: "A gripping drama that unravels the complexities of love, loyalty, and betrayal in contemporary Ethiopian society." },
-            { title: "ህይወት አዲስ", year: "2025", seed: "movie10", genre: "Inspiration", desc: "A celebration of new beginnings, following a group of friends as they navigate life's twists and turns with courage and hope." }
+            {
+                title: "የፍቅር ኪዳን",
+                titleEn: "Yefikir Kidan",
+                year: "2026",
+                genre: "Drama",
+                desc: "A powerful Ethiopian drama exploring the depths of love, commitment, and the sacrifices made to protect what matters most.",
+                videoId: "W6cCOiRcZHE",
+                watchUrl: "https://youtu.be/W6cCOiRcZHE"
+            },
+            {
+                title: "ዳናሽ",
+                titleEn: "Danash",
+                year: "2026",
+                genre: "Drama",
+                desc: "An emotional journey of a young woman navigating life's challenges, love, and self-discovery in modern Ethiopia.",
+                videoId: "Tyl5PGNU4Sc",
+                watchUrl: "https://www.youtube.com/watch?v=Tyl5PGNU4Sc"
+            },
+            {
+                title: "ሳያት",
+                titleEn: "Sayat",
+                year: "2026",
+                genre: "Drama",
+                desc: "A captivating story of ambition, power, and the choices that define us, set against the vibrant backdrop of Addis Ababa.",
+                videoId: "T_rBFWM6cFg",
+                watchUrl: "https://www.youtube.com/watch?v=T_rBFWM6cFg"
+            },
+            {
+                title: "ወራዙት",
+                titleEn: "Werazut",
+                year: "2026",
+                genre: "Drama",
+                desc: "A gripping tale of resilience and hope, following the lives of those who dare to dream despite the odds.",
+                videoId: "-GEm-TL3Rdo",
+                watchUrl: "https://www.youtube.com/watch?v=-GEm-TL3Rdo"
+            },
+            {
+                title: "ከርቤ",
+                titleEn: "Kerbe",
+                year: "2025",
+                genre: "Drama",
+                desc: "A heartfelt story of family, tradition, and the unbreakable bonds that hold us together through life's trials.",
+                videoId: "CWE3vgB29uE",
+                watchUrl: "https://www.youtube.com/watch?v=CWE3vgB29uE"
+            },
+            {
+                title: "ወዶ ገር",
+                titleEn: "Wedo Ger",
+                year: "2026",
+                genre: "Drama",
+                desc: "A moving narrative of love, loss, and the journey back to one's roots, exploring the meaning of home.",
+                videoId: "RX1r6UJ5Epg",
+                watchUrl: "https://www.youtube.com/watch?v=RX1r6UJ5Epg"
+            },
+            {
+                title: "የቦሌ ቱጃሮች",
+                titleEn: "Yebole Tujaroch",
+                year: "2026",
+                genre: "Comedy",
+                desc: "A hilarious comedy that brings together a cast of unforgettable characters in the bustling streets of Bole, Addis Ababa.",
+                videoId: "r-kMVOe9Jw0",
+                watchUrl: "https://www.youtube.com/watch?v=r-kMVOe9Jw0"
+            },
+            {
+                title: "ለፋሲካ ሌሊት",
+                titleEn: "Lefasika Lelit",
+                year: "2026",
+                genre: "Drama",
+                desc: "A powerful drama set during the sacred night of Fasika, weaving together stories of faith, redemption, and new beginnings.",
+                videoId: "PL-Lo0d0qEpx7h0zDmMnh3M6ZZuFUSFQax",
+                watchUrl: "https://www.youtube.com/playlist?list=PL-Lo0d0qEpx7h0zDmMnh3M6ZZuFUSFQax",
+                isPlaylist: true
+            },
+            {
+                title: "ድሮ እና ዘንድሮ",
+                titleEn: "Diro Ena Zendro",
+                year: "2026",
+                genre: "Drama",
+                desc: "A nostalgic journey through time, contrasting the old and the new, and celebrating the rich cultural heritage of Ethiopia.",
+                videoId: "PLmZp388cawO2uA6lyUlmVulgeBJR_rk7K",
+                watchUrl: "https://www.youtube.com/playlist?list=PLmZp388cawO2uA6lyUlmVulgeBJR_rk7K",
+                isPlaylist: true
+            },
+            {
+                title: "አትልፊ",
+                titleEn: "Atelefi",
+                year: "2026",
+                genre: "Drama",
+                desc: "An inspiring story of perseverance and the relentless pursuit of dreams, reminding us that true strength comes from within.",
+                videoId: "Z2rUAucS1kg",
+                watchUrl: "https://www.youtube.com/watch?v=Z2rUAucS1kg"
+            }
         ];
 
         // ================================================================
@@ -1572,14 +1660,19 @@
         // MOVIE CAROUSEL — INIT & OVERLAY LOGIC
         // ================================================================
 
+        function getThumbnail(videoId) {
+            return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+        }
+
         function initMovieCarousel() {
             const track = document.getElementById('movieTrack');
             if (!track) return;
 
+            // Build carousel items with real thumbnails
             const allMovies = [...movies2025, ...movies2025, ...movies2025];
             track.innerHTML = allMovies.map(movie => `
                 <div class="movie-item" title="${movie.title} (${movie.year})">
-                    <img src="https://picsum.photos/seed/${movie.seed}/120/160" alt="${movie.title}" class="poster" loading="lazy" />
+                    <img src="${getThumbnail(movie.videoId)}" alt="${movie.title}" class="poster" loading="lazy" />
                     <div class="info">
                         <span class="title">${movie.title}</span>
                         <span class="year">${movie.year}</span>
@@ -1604,18 +1697,18 @@
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
 
-            // Populate grid with 10 movies
             const grid = document.getElementById('movieGrid');
+            const prevScroll = grid.scrollTop;
             grid.innerHTML = movies2025.map((movie, index) => `
                 <div class="movie-card" data-index="${index}" title="${movie.title} (${movie.year}) — ${movie.genre}">
-                    <img src="https://picsum.photos/seed/${movie.seed}/200/300" alt="${movie.title}" class="poster-lg" loading="lazy" />
+                    <img src="${getThumbnail(movie.videoId)}" alt="${movie.title}" class="poster-lg" loading="lazy" />
                     <div class="title-lg">${movie.title}</div>
                     <div class="year-lg">${movie.year}</div>
                     <div class="badge-lg">✦ ${movie.genre}</div>
                 </div>
             `).join('');
+            grid.scrollTop = prevScroll;
 
-            // Add click listeners to each movie card
             document.querySelectorAll('.movie-card').forEach((card, idx) => {
                 card.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -1631,7 +1724,6 @@
             const overlay = document.getElementById('movieOverlay');
             overlay.classList.remove('active');
             document.body.style.overflow = '';
-            // Ensure detail is closed
             closeMovieDetail();
         }
 
@@ -1641,21 +1733,21 @@
             if (!movie) return;
             state.detailOpen = true;
 
+            const grid = document.getElementById('movieGrid');
+            grid.dataset.scrollPos = grid.scrollTop;
+
             const detailOverlay = document.getElementById('movieDetailOverlay');
-            document.getElementById('detailPoster').src = `https://picsum.photos/seed/${movie.seed}/400/600`;
+            document.getElementById('detailPoster').src = getThumbnail(movie.videoId);
             document.getElementById('detailTitle').textContent = movie.title;
             document.getElementById('detailYear').textContent = movie.year;
             document.getElementById('detailGenre').textContent = movie.genre;
             document.getElementById('detailDesc').textContent = movie.desc;
 
-            // Set watch button placeholder
             document.getElementById('detailWatchBtn').onclick = function() {
-                showToast('🎬 Watch link coming soon for ' + movie.title, 'info');
+                window.open(movie.watchUrl, '_blank');
             };
 
             detailOverlay.classList.add('active');
-            // Ensure the modal doesn't scroll when detail is open (we handle inside)
-            document.getElementById('movieModal').style.overflow = 'hidden';
         }
 
         // ---- Close Movie Detail ----
@@ -1663,7 +1755,12 @@
             state.detailOpen = false;
             const detailOverlay = document.getElementById('movieDetailOverlay');
             detailOverlay.classList.remove('active');
-            document.getElementById('movieModal').style.overflow = '';
+
+            const grid = document.getElementById('movieGrid');
+            if (grid && grid.dataset.scrollPos) {
+                grid.scrollTop = parseInt(grid.dataset.scrollPos);
+                grid.dataset.scrollPos = 0;
+            }
         }
 
         // ---- Detail Event Listeners ----
@@ -1674,11 +1771,9 @@
             const detailCloseBtn = document.getElementById('detailCloseBtn');
             const detailCloseAlt = document.getElementById('detailCloseBtnAlt');
 
-            // Close overlay
             closeArea.addEventListener('click', closeMovieOverlay);
             closeBtn.addEventListener('click', closeMovieOverlay);
 
-            // Close detail
             detailCloseBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 closeMovieDetail();
@@ -1688,7 +1783,6 @@
                 closeMovieDetail();
             });
 
-            // Close detail by clicking on the detail overlay background
             const detailOverlay = document.getElementById('movieDetailOverlay');
             detailOverlay.addEventListener('click', function(e) {
                 if (e.target === this) {
@@ -1696,7 +1790,6 @@
                 }
             });
 
-            // Close on Escape key
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     if (state.detailOpen) {
@@ -1707,7 +1800,6 @@
                 }
             });
 
-            // Auto-close overlay when mouse leaves the whole modal area
             let hoverTimeout = null;
             overlay.addEventListener('mouseleave', function(e) {
                 const related = e.relatedTarget;
@@ -2667,7 +2759,6 @@
                 });
             }
 
-            // Init movie carousel
             initMovieCarousel();
 
             renderFilters();
@@ -2703,7 +2794,7 @@
             }
         }, 28000);
 
-        console.log('✅ EthioTrend AI initialized — Movie overlay with detail popups');
+        console.log('✅ EthioTrend AI initialized with real 2026 Amharic movies');
     </script>
 
 </body>

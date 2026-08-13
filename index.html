@@ -73,7 +73,6 @@
         ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
 
-        /* HEADER */
         .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 32px; gap: 20px; flex-wrap: wrap; }
         .brand { display: flex; align-items: center; gap: 14px; cursor: pointer; transition: opacity var(--transition); flex-shrink: 0; }
         .brand:hover { opacity: 0.8; }
@@ -93,7 +92,6 @@
         .theme-toggle { padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: all var(--transition); font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .theme-toggle:hover { border-color: var(--border-hover); background: var(--surface-hover); }
 
-        /* ===== MOVIE CAROUSEL - BIGGER 300px x 78px ===== */
         .movie-carousel {
             position: relative;
             width: 300px;
@@ -109,581 +107,69 @@
             cursor: pointer;
             z-index: 10;
         }
-        .movie-carousel:hover {
-            border-color: var(--border-hover);
-            transform: scale(1.02);
-        }
-        .movie-carousel .carousel-track {
-            display: flex;
-            gap: 0;
-            width: max-content;
-            animation: movieScroll 28s linear infinite;
-            height: 100%;
-            align-items: center;
-        }
-        .movie-carousel .carousel-track.paused {
-            animation-play-state: paused;
-        }
-        @keyframes movieScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .movie-carousel .movie-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0 14px;
-            height: 100%;
-            flex-shrink: 0;
-            cursor: pointer;
-            transition: background var(--transition);
-            border-radius: var(--radius-sm);
-            text-decoration: none;
-        }
-        .movie-carousel .movie-item:hover {
-            background: var(--surface-hover);
-        }
-        .movie-carousel .movie-item .poster {
-            width: 52px;
-            height: 64px;
-            border-radius: 4px;
-            object-fit: cover;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
-            background: var(--bg);
-        }
-        .movie-carousel .movie-item .info {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-        .movie-carousel .movie-item .info .title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 85px;
-            line-height: 1.2;
-        }
-        .movie-carousel .movie-item .info .year {
-            font-size: 10px;
-            color: var(--text-tertiary);
-            font-weight: 500;
-        }
-        .movie-carousel .movie-item .info .badge-new {
-            font-size: 8px;
-            font-weight: 700;
-            color: var(--accent-green);
-            background: rgba(34,197,94,0.15);
-            padding: 1px 8px;
-            border-radius: 999px;
-            display: inline-block;
-            width: fit-content;
-            margin-top: 1px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-        .movie-carousel .carousel-label {
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 34px;
-            background: linear-gradient(90deg, var(--surface) 60%, transparent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            pointer-events: none;
-        }
-        .movie-carousel .carousel-label .icon {
-            font-size: 15px;
-            color: var(--text-tertiary);
-            opacity: 0.7;
-        }
-        .movie-carousel .carousel-overlay {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 38px;
-            background: linear-gradient(90deg, transparent, var(--surface) 80%);
-            z-index: 2;
-            pointer-events: none;
-        }
-        .movie-carousel .click-hint {
-            position: absolute;
-            bottom: 3px;
-            right: 10px;
-            font-size: 8px;
-            color: var(--text-quaternary);
-            opacity: 0.5;
-            z-index: 3;
-            pointer-events: none;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
+        .movie-carousel:hover { border-color: var(--border-hover); transform: scale(1.02); }
+        .movie-carousel .carousel-track { display: flex; gap: 0; width: max-content; animation: movieScroll 28s linear infinite; height: 100%; align-items: center; }
+        .movie-carousel .carousel-track.paused { animation-play-state: paused; }
+        @keyframes movieScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .movie-carousel .movie-item { display: flex; align-items: center; gap: 12px; padding: 0 14px; height: 100%; flex-shrink: 0; cursor: pointer; transition: background var(--transition); border-radius: var(--radius-sm); text-decoration: none; }
+        .movie-carousel .movie-item:hover { background: var(--surface-hover); }
+        .movie-carousel .movie-item .poster { width: 52px; height: 64px; border-radius: 4px; object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); background: var(--bg); }
+        .movie-carousel .movie-item .info { display: flex; flex-direction: column; min-width: 0; }
+        .movie-carousel .movie-item .info .title { font-size: 13px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 85px; line-height: 1.2; }
+        .movie-carousel .movie-item .info .year { font-size: 10px; color: var(--text-tertiary); font-weight: 500; }
+        .movie-carousel .movie-item .info .badge-new { font-size: 8px; font-weight: 700; color: var(--accent-green); background: rgba(34,197,94,0.15); padding: 1px 8px; border-radius: 999px; display: inline-block; width: fit-content; margin-top: 1px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .movie-carousel .carousel-label { position: absolute; top: 0; left: 0; bottom: 0; width: 34px; background: linear-gradient(90deg, var(--surface) 60%, transparent); display: flex; align-items: center; justify-content: center; z-index: 2; pointer-events: none; }
+        .movie-carousel .carousel-label .icon { font-size: 15px; color: var(--text-tertiary); opacity: 0.7; }
+        .movie-carousel .carousel-overlay { position: absolute; top: 0; right: 0; bottom: 0; width: 38px; background: linear-gradient(90deg, transparent, var(--surface) 80%); z-index: 2; pointer-events: none; }
+        .movie-carousel .click-hint { position: absolute; bottom: 3px; right: 10px; font-size: 8px; color: var(--text-quaternary); opacity: 0.5; z-index: 3; pointer-events: none; letter-spacing: 0.04em; text-transform: uppercase; }
 
-        /* ===== MOVIE CAROUSEL RESPONSIVE ===== */
-        @media (max-width: 820px) {
-            .movie-carousel {
-                width: 240px;
-                height: 66px;
-            }
-            .movie-carousel .movie-item .poster {
-                width: 42px;
-                height: 52px;
-            }
-            .movie-carousel .movie-item .info .title {
-                font-size: 12px;
-                max-width: 65px;
-            }
-            .movie-carousel .movie-item .info .year {
-                font-size: 9px;
-            }
-            .movie-carousel .movie-item {
-                padding: 0 10px;
-                gap: 10px;
-            }
-            .movie-carousel .carousel-label .icon {
-                font-size: 12px;
-            }
-            .movie-carousel .carousel-label {
-                width: 28px;
-            }
-            .movie-carousel .carousel-overlay {
-                width: 28px;
-            }
-        }
-        @media (max-width: 640px) {
-            .movie-carousel {
-                width: 190px;
-                height: 58px;
-            }
-            .movie-carousel .movie-item .poster {
-                width: 36px;
-                height: 44px;
-            }
-            .movie-carousel .movie-item .info .title {
-                font-size: 10px;
-                max-width: 50px;
-            }
-            .movie-carousel .movie-item .info .year {
-                font-size: 8px;
-            }
-            .movie-carousel .movie-item {
-                padding: 0 8px;
-                gap: 8px;
-            }
-            .movie-carousel .carousel-label .icon {
-                font-size: 11px;
-            }
-            .movie-carousel .carousel-label {
-                width: 24px;
-            }
-            .movie-carousel .carousel-overlay {
-                width: 24px;
-            }
-        }
-        @media (max-width: 480px) {
-            .movie-carousel {
-                width: 160px;
-                height: 50px;
-            }
-            .movie-carousel .movie-item .poster {
-                width: 30px;
-                height: 38px;
-            }
-            .movie-carousel .movie-item .info .title {
-                font-size: 9px;
-                max-width: 42px;
-            }
-            .movie-carousel .movie-item .info .year {
-                font-size: 7px;
-            }
-            .movie-carousel .movie-item {
-                padding: 0 6px;
-                gap: 6px;
-            }
-            .movie-carousel .carousel-label .icon {
-                font-size: 10px;
-            }
-            .movie-carousel .carousel-label {
-                width: 20px;
-            }
-            .movie-carousel .carousel-overlay {
-                width: 20px;
-            }
-        }
+        @media (max-width: 820px) { .movie-carousel { width: 240px; height: 66px; } .movie-carousel .movie-item .poster { width: 42px; height: 52px; } .movie-carousel .movie-item .info .title { font-size: 12px; max-width: 65px; } .movie-carousel .movie-item .info .year { font-size: 9px; } .movie-carousel .movie-item { padding: 0 10px; gap: 10px; } .movie-carousel .carousel-label .icon { font-size: 12px; } .movie-carousel .carousel-label { width: 28px; } .movie-carousel .carousel-overlay { width: 28px; } }
+        @media (max-width: 640px) { .movie-carousel { width: 190px; height: 58px; } .movie-carousel .movie-item .poster { width: 36px; height: 44px; } .movie-carousel .movie-item .info .title { font-size: 10px; max-width: 50px; } .movie-carousel .movie-item .info .year { font-size: 8px; } .movie-carousel .movie-item { padding: 0 8px; gap: 8px; } .movie-carousel .carousel-label .icon { font-size: 11px; } .movie-carousel .carousel-label { width: 24px; } .movie-carousel .carousel-overlay { width: 24px; } }
+        @media (max-width: 480px) { .movie-carousel { width: 160px; height: 50px; } .movie-carousel .movie-item .poster { width: 30px; height: 38px; } .movie-carousel .movie-item .info .title { font-size: 9px; max-width: 42px; } .movie-carousel .movie-item .info .year { font-size: 7px; } .movie-carousel .movie-item { padding: 0 6px; gap: 6px; } .movie-carousel .carousel-label .icon { font-size: 10px; } .movie-carousel .carousel-label { width: 20px; } .movie-carousel .carousel-overlay { width: 20px; } }
 
-        /* ===== MOVIE FULLSCREEN OVERLAY ===== */
-        .movie-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 9999;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            padding: 40px;
-        }
-        .movie-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-        .movie-overlay .close-area {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            cursor: default;
-            z-index: 1;
-        }
-        .movie-overlay .modal {
-            position: relative;
-            z-index: 2;
-            background: var(--surface);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--border);
-            max-width: 780px;
-            width: 100%;
-            max-height: 85vh;
-            padding: 32px 28px 28px;
-            box-shadow: var(--shadow-lg);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            animation: modalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.92) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .movie-overlay .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            flex-shrink: 0;
-        }
-        .movie-overlay .modal-header h2 {
-            font-size: 20px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .movie-overlay .modal-header h2 span {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--text-tertiary);
-        }
-        .movie-overlay .modal-header .close-btn {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text-tertiary);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition);
-            flex-shrink: 0;
-        }
-        .movie-overlay .modal-header .close-btn:hover {
-            border-color: var(--border-hover);
-            color: var(--text-primary);
-            background: var(--surface-hover);
-        }
-        .movie-overlay .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 16px;
-            overflow-y: auto;
-            padding-right: 4px;
-            flex: 1;
-            max-height: 55vh;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-        }
-        .movie-overlay .movie-grid::-webkit-scrollbar {
-            width: 5px;
-        }
-        .movie-overlay .movie-grid::-webkit-scrollbar-track {
-            background: var(--bg);
-            border-radius: 4px;
-        }
-        .movie-overlay .movie-grid::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-        .movie-overlay .movie-grid .movie-card {
-            background: var(--bg);
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            overflow: hidden;
-            transition: all var(--transition);
-            cursor: pointer;
-            text-align: center;
-            padding: 12px 10px 14px;
-            will-change: transform;
-        }
-        .movie-overlay .movie-grid .movie-card:hover {
-            border-color: var(--accent-gold);
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-glow);
-        }
-        .movie-overlay .movie-grid .movie-card .poster-lg {
-            width: 100%;
-            aspect-ratio: 2/3;
-            border-radius: var(--radius-sm);
-            object-fit: cover;
-            border: 1px solid var(--border);
-            background: var(--surface);
-        }
-        .movie-overlay .movie-grid .movie-card .title-lg {
-            font-size: 13px;
-            font-weight: 600;
-            margin-top: 8px;
-            color: var(--text-primary);
-            line-height: 1.2;
-        }
-        .movie-overlay .movie-grid .movie-card .year-lg {
-            font-size: 11px;
-            color: var(--text-tertiary);
-            margin-top: 2px;
-        }
-        .movie-overlay .movie-grid .movie-card .badge-lg {
-            font-size: 8px;
-            font-weight: 700;
-            color: var(--accent-green);
-            background: rgba(34,197,94,0.15);
-            padding: 1px 8px;
-            border-radius: 999px;
-            display: inline-block;
-            margin-top: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
+        .movie-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: rgba(0,0,0,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.4s ease; padding: 40px; }
+        .movie-overlay.active { display: flex; opacity: 1; }
+        .movie-overlay .close-area { position: absolute; top: 0; left: 0; right: 0; bottom: 0; cursor: default; z-index: 1; }
+        .movie-overlay .modal { position: relative; z-index: 2; background: var(--surface); border-radius: var(--radius-xl); border: 1px solid var(--border); max-width: 780px; width: 100%; max-height: 85vh; padding: 32px 28px 28px; box-shadow: var(--shadow-lg); overflow: hidden; display: flex; flex-direction: column; animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        @keyframes modalIn { from { opacity:0; transform:scale(0.92) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }
+        .movie-overlay .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-shrink: 0; }
+        .movie-overlay .modal-header h2 { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .movie-overlay .modal-header h2 span { font-size: 14px; font-weight: 400; color: var(--text-tertiary); }
+        .movie-overlay .modal-header .close-btn { background: var(--bg); border: 1px solid var(--border); color: var(--text-tertiary); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all var(--transition); flex-shrink: 0; }
+        .movie-overlay .modal-header .close-btn:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface-hover); }
+        .movie-overlay .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 16px; overflow-y: auto; padding-right: 4px; flex: 1; max-height: 55vh; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .movie-overlay .movie-grid::-webkit-scrollbar { width: 5px; }
+        .movie-overlay .movie-grid::-webkit-scrollbar-track { background: var(--bg); border-radius: 4px; }
+        .movie-overlay .movie-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .movie-overlay .movie-grid .movie-card { background: var(--bg); border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; transition: all var(--transition); cursor: pointer; text-align: center; padding: 12px 10px 14px; will-change: transform; }
+        .movie-overlay .movie-grid .movie-card:hover { border-color: var(--accent-gold); transform: translateY(-4px); box-shadow: var(--shadow-glow); }
+        .movie-overlay .movie-grid .movie-card .poster-lg { width: 100%; aspect-ratio: 2/3; border-radius: var(--radius-sm); object-fit: cover; border: 1px solid var(--border); background: var(--surface); }
+        .movie-overlay .movie-grid .movie-card .title-lg { font-size: 13px; font-weight: 600; margin-top: 8px; color: var(--text-primary); line-height: 1.2; }
+        .movie-overlay .movie-grid .movie-card .year-lg { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+        .movie-overlay .movie-grid .movie-card .badge-lg { font-size: 8px; font-weight: 700; color: var(--accent-green); background: rgba(34,197,94,0.15); padding: 1px 8px; border-radius: 999px; display: inline-block; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
 
-        /* ===== MOVIE DETAIL POPUP ===== */
-        .movie-detail-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            border-radius: var(--radius-xl);
-            opacity: 0;
-            transition: opacity 0.25s ease;
-        }
-        .movie-detail-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-        .movie-detail-overlay .detail-card {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-hover);
-            max-width: 460px;
-            width: 100%;
-            padding: 28px 24px 24px;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            max-height: 80vh;
-            overflow-y: auto;
-            transform: scale(0.92) translateY(8px);
-            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
-            opacity: 0;
-            will-change: transform, opacity;
-        }
-        .movie-detail-overlay.active .detail-card {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
-        .movie-detail-overlay .detail-card .detail-close {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text-tertiary);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition);
-            z-index: 2;
-        }
-        .movie-detail-overlay .detail-card .detail-close:hover {
-            border-color: var(--border-hover);
-            color: var(--text-primary);
-            background: var(--surface-hover);
-        }
-        .movie-detail-overlay .detail-card .detail-poster {
-            width: 100%;
-            max-height: 260px;
-            object-fit: cover;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            margin-bottom: 16px;
-            background: var(--bg);
-        }
-        .movie-detail-overlay .detail-card .detail-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .movie-detail-overlay .detail-card .detail-meta {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-        .movie-detail-overlay .detail-card .detail-meta .year {
-            font-size: 14px;
-            color: var(--text-tertiary);
-        }
-        .movie-detail-overlay .detail-card .detail-meta .genre {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--accent-green);
-            background: rgba(34,197,94,0.15);
-            padding: 2px 12px;
-            border-radius: 999px;
-            display: inline-block;
-        }
-        .movie-detail-overlay .detail-card .detail-desc {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
-        .movie-detail-overlay .detail-card .detail-action {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .movie-detail-overlay .detail-card .detail-action .btn-watch {
-            padding: 8px 24px;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition);
-            font-family: inherit;
-            background: linear-gradient(135deg, var(--accent-gold), #f5a623);
-            color: #1a1a2e;
-            box-shadow: 0 4px 16px rgba(252,221,9,0.2);
-        }
-        .movie-detail-overlay .detail-card .detail-action .btn-watch:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(252,221,9,0.35);
-        }
-        .movie-detail-overlay .detail-card .detail-action .btn-close-detail {
-            padding: 8px 20px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            background: transparent;
-            color: var(--text-tertiary);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all var(--transition);
-            font-family: inherit;
-        }
-        .movie-detail-overlay .detail-card .detail-action .btn-close-detail:hover {
-            border-color: var(--border-hover);
-            color: var(--text-primary);
-            background: var(--surface-hover);
-        }
+        .movie-detail-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 24px; border-radius: var(--radius-xl); opacity: 0; transition: opacity 0.25s ease; }
+        .movie-detail-overlay.active { display: flex; opacity: 1; }
+        .movie-detail-overlay .detail-card { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border-hover); max-width: 460px; width: 100%; padding: 28px 24px 24px; box-shadow: var(--shadow-lg); position: relative; max-height: 80vh; overflow-y: auto; transform: scale(0.92) translateY(8px); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease; opacity: 0; will-change: transform, opacity; }
+        .movie-detail-overlay.active .detail-card { transform: scale(1) translateY(0); opacity: 1; }
+        .movie-detail-overlay .detail-card .detail-close { position: absolute; top: 12px; right: 12px; background: var(--bg); border: 1px solid var(--border); color: var(--text-tertiary); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all var(--transition); z-index: 2; }
+        .movie-detail-overlay .detail-card .detail-close:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface-hover); }
+        .movie-detail-overlay .detail-card .detail-poster { width: 100%; max-height: 260px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 16px; background: var(--bg); }
+        .movie-detail-overlay .detail-card .detail-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .movie-detail-overlay .detail-card .detail-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+        .movie-detail-overlay .detail-card .detail-meta .year { font-size: 14px; color: var(--text-tertiary); }
+        .movie-detail-overlay .detail-card .detail-meta .genre { font-size: 12px; font-weight: 600; color: var(--accent-green); background: rgba(34,197,94,0.15); padding: 2px 12px; border-radius: 999px; display: inline-block; }
+        .movie-detail-overlay .detail-card .detail-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+        .movie-detail-overlay .detail-card .detail-action { display: flex; gap: 12px; flex-wrap: wrap; }
+        .movie-detail-overlay .detail-card .detail-action .btn-watch { padding: 8px 24px; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: inherit; background: linear-gradient(135deg, var(--accent-gold), #f5a623); color: #1a1a2e; box-shadow: 0 4px 16px rgba(252,221,9,0.2); }
+        .movie-detail-overlay .detail-card .detail-action .btn-watch:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(252,221,9,0.35); }
+        .movie-detail-overlay .detail-card .detail-action .btn-close-detail { padding: 8px 20px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; color: var(--text-tertiary); font-size: 14px; font-weight: 500; cursor: pointer; transition: all var(--transition); font-family: inherit; }
+        .movie-detail-overlay .detail-card .detail-action .btn-close-detail:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface-hover); }
 
-        /* ===== RESPONSIVE OVERLAY ===== */
-        @media (max-width: 820px) {
-            .movie-overlay .modal {
-                padding: 20px 16px 16px;
-                max-width: 95%;
-            }
-            .movie-overlay .movie-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 12px;
-            }
-            .movie-overlay .modal-header h2 {
-                font-size: 17px;
-            }
-            .movie-detail-overlay .detail-card {
-                max-width: 400px;
-                padding: 20px 16px 16px;
-            }
-            .movie-detail-overlay .detail-card .detail-title {
-                font-size: 19px;
-            }
-        }
-        @media (max-width: 640px) {
-            .movie-overlay .movie-grid {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 10px;
-            }
-            .movie-overlay .movie-grid .movie-card .title-lg {
-                font-size: 11px;
-            }
-            .movie-overlay .modal-header h2 {
-                font-size: 15px;
-            }
-            .movie-overlay .modal {
-                padding: 16px 12px 12px;
-            }
-            .movie-detail-overlay .detail-card {
-                max-width: 340px;
-                padding: 16px 12px 12px;
-            }
-            .movie-detail-overlay .detail-card .detail-title {
-                font-size: 17px;
-            }
-            .movie-detail-overlay .detail-card .detail-poster {
-                max-height: 180px;
-            }
-        }
-        @media (max-width: 480px) {
-            .movie-detail-overlay .detail-card {
-                max-width: 300px;
-                padding: 14px 10px 10px;
-            }
-            .movie-detail-overlay .detail-card .detail-title {
-                font-size: 15px;
-            }
-            .movie-detail-overlay .detail-card .detail-poster {
-                max-height: 140px;
-            }
-        }
+        @media (max-width: 820px) { .movie-overlay .modal { padding: 20px 16px 16px; max-width: 95%; } .movie-overlay .movie-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; } .movie-overlay .modal-header h2 { font-size: 17px; } .movie-detail-overlay .detail-card { max-width: 400px; padding: 20px 16px 16px; } .movie-detail-overlay .detail-card .detail-title { font-size: 19px; } }
+        @media (max-width: 640px) { .movie-overlay .movie-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; } .movie-overlay .movie-grid .movie-card .title-lg { font-size: 11px; } .movie-overlay .modal-header h2 { font-size: 15px; } .movie-overlay .modal { padding: 16px 12px 12px; } .movie-detail-overlay .detail-card { max-width: 340px; padding: 16px 12px 12px; } .movie-detail-overlay .detail-card .detail-title { font-size: 17px; } .movie-detail-overlay .detail-card .detail-poster { max-height: 180px; } }
+        @media (max-width: 480px) { .movie-detail-overlay .detail-card { max-width: 300px; padding: 14px 10px 10px; } .movie-detail-overlay .detail-card .detail-title { font-size: 15px; } .movie-detail-overlay .detail-card .detail-poster { max-height: 140px; } }
 
-        /* SEARCH */
         .search-box { position: relative; width: 100%; max-width: 280px; flex-shrink: 0; }
         .search-box svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-quaternary); pointer-events: none; z-index: 2; }
         .search-box input { width: 100%; padding: 12px 16px 12px 42px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); color: var(--text-primary); font-size: 14px; outline: none; transition: all var(--transition); position: relative; z-index: 2; }
@@ -706,7 +192,6 @@
         .search-suggestions .external-search .ext-btn.youtube:hover { border-color: #ff0000; color: #fff; background: #ff0000; }
         .search-suggestions .external-search .ext-btn.google:hover { border-color: #4285f4; color: #fff; background: #4285f4; }
 
-        /* TABS */
         .tabs { display: flex; gap: 4px; margin-top: 0px; margin-bottom: 24px; background: var(--surface); border-radius: var(--radius-lg); padding: 4px; border: 1px solid var(--border); overflow-x: auto; flex-wrap: nowrap; }
         .tab { padding: 10px 20px; border: none; background: transparent; color: var(--text-tertiary); font-size: 13px; font-weight: 500; cursor: pointer; border-radius: var(--radius-md); transition: all var(--transition); font-family: inherit; white-space: nowrap; flex: 0 1 auto; }
         .tab:hover { color: var(--text-secondary); background: var(--surface-hover); }
@@ -715,7 +200,6 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-        /* STATS */
         .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
         @media (max-width:768px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
         @media (max-width:480px) { .stats-grid { grid-template-columns:1fr 1fr; } }
@@ -729,14 +213,12 @@
         .stat-delta.down { background: rgba(239,68,68,0.1); color: var(--accent-red); }
         .stat-delta.neutral { background: rgba(107,114,128,0.1); color: var(--accent-gray); }
 
-        /* FILTERS */
         .filters { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
         .filter-label { font-size: 13px; color: var(--text-tertiary); font-weight: 500; margin-right: 4px; }
         .chip { padding: 7px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all var(--transition); user-select: none; font-family: inherit; }
         .chip:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface-hover); }
         .chip.active { background: var(--text-primary); color: var(--bg); border-color: var(--text-primary); }
 
-        /* TOP PERFORMERS */
         .top-performers { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
         .performer-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; text-align: center; transition: all var(--transition); }
         .performer-card:hover { border-color: var(--accent-gold); transform: translateY(-3px); box-shadow: var(--shadow-glow); }
@@ -750,7 +232,6 @@
         .performer-card .badge.blue { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
         .performer-card .badge.red { background: rgba(239,68,68,0.15); color: var(--accent-red); }
 
-        /* LIVE FEED */
         .realtime-feed { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; overflow: hidden; position: relative; }
         .realtime-feed .feed-label { font-size: 11px; font-weight: 700; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; flex-shrink: 0; z-index: 2; background: var(--surface); padding-right: 12px; }
         .realtime-feed .feed-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-red); animation: pulseGlow 1s infinite; }
@@ -763,7 +244,6 @@
         .feed-ticker .feed-item .sep { color: var(--text-quaternary); margin: 0 4px; }
         @media (max-width:640px) { .realtime-feed { flex-wrap: nowrap; padding: 10px 12px; } .feed-ticker .feed-item { font-size: 11px; } }
 
-        /* TREND LIST */
         .trend-list { display: flex; flex-direction: column; gap: 10px; }
         .trend-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 22px; cursor: pointer; transition: all var(--transition); display: grid; grid-template-columns: 36px 1fr auto 140px 110px; align-items: center; gap: 16px; position: relative; }
         @media (max-width:768px) { .trend-item { grid-template-columns:36px 1fr auto; } .trend-spark, .trend-sentiment { display: none; } }
@@ -803,12 +283,10 @@
         .sentiment-bars .bar.fill.warn { background: var(--accent-orange); }
         .sentiment-bars .bar.fill.danger { background: var(--accent-red); }
 
-        /* DETAIL PANEL */
         .detail-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-top: 10px; animation: slideDown 0.3s cubic-bezier(0.4,0,0.2,1); box-shadow: var(--shadow-lg); }
         @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
         .data-source-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; color: var(--accent-green); background: rgba(34,197,94,0.1); padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(34,197,94,0.2); }
 
-        /* TOAST */
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); color: var(--text-primary); padding: 14px 28px; border-radius: var(--radius-md); font-size: 14px; font-weight: 500; z-index: 2000; opacity: 0; transition: all 0.35s cubic-bezier(0.4,0,0.2,1); pointer-events: none; max-width: 92%; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow-lg); }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
         .toast.success { border-color: var(--accent-green); }
@@ -816,7 +294,6 @@
         .toast.info { border-color: var(--accent-blue); }
         .toast.warning { border-color: var(--accent-orange); background: rgba(249,115,22,0.15); color: var(--accent-orange); }
 
-        /* AI TOOLS */
         .ai-tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 8px; }
         .ai-tool-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; transition: all var(--transition); }
         .ai-tool-card:hover { border-color: var(--border-hover); box-shadow: var(--shadow-lg); }
@@ -839,7 +316,6 @@
         .spinner-sm { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.15); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ANALYZE */
         .upload-zone { background: var(--surface); border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: 40px 20px; text-align: center; cursor: pointer; transition: all var(--transition); margin-bottom: 20px; }
         .upload-zone:hover { border-color: var(--border-hover); background: var(--surface-hover); }
         .upload-zone .icon-wrap { width: 72px; height: 72px; border-radius: 50%; background: rgba(59,130,246,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 32px; color: var(--accent-blue); }
@@ -879,30 +355,18 @@
         .warning-banner .text { flex: 1; font-size: 14px; }
         .warning-banner .text strong { display: block; font-weight: 700; }
 
-        @media (max-width:480px) {
-            .header { flex-direction: column; align-items: stretch; }
-            .header-actions { flex-wrap: wrap; justify-content: flex-start; }
-            .search-box { max-width: 100%; }
-            .tabs .tab { padding: 8px 14px; font-size: 12px; }
-            .ai-tools-grid { grid-template-columns: 1fr; }
-            .top-performers { grid-template-columns: 1fr 1fr; }
-            .stat-value { font-size: 28px; }
-            .trend-item { padding: 14px 16px; gap: 10px; }
-            .trend-name { font-size: 13px; }
-            .brand-text h1 { font-size: 18px; }
-            .app-container { padding: 16px 12px 40px; }
-            .detail-panel { padding: 16px; }
-            .results-panel { padding: 16px; }
-            .results-panel .score-ring { width: 120px; height: 120px; }
-            .results-panel .score-ring .inner { width: 92px; height: 92px; }
-            .results-panel .score-ring .inner .number { font-size: 28px; }
-        }
-        @media (max-width:380px) {
-            .top-performers { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .stat-card { padding: 14px; }
-            .stat-value { font-size: 22px; }
-        }
+        .live-engagement-value { font-family: 'Inter', monospace; font-variant-numeric: tabular-nums; transition: color 0.2s ease; }
+        .engagement-up { color: var(--accent-green); }
+        .engagement-down { color: var(--accent-red); }
+        .engagement-neutral { color: var(--text-secondary); }
+        .engagement-pulse { animation: pulseText 1.5s ease-in-out infinite; }
+        @keyframes pulseText { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
+        .stat-delta .engagement-delta { font-weight: 600; margin-left: 4px; }
+        .stat-delta .engagement-delta.up { color: var(--accent-green); }
+        .stat-delta .engagement-delta.down { color: var(--accent-red); }
+
+        @media (max-width:480px) { .header { flex-direction: column; align-items: stretch; } .header-actions { flex-wrap: wrap; justify-content: flex-start; } .search-box { max-width: 100%; } .tabs .tab { padding: 8px 14px; font-size: 12px; } .ai-tools-grid { grid-template-columns: 1fr; } .top-performers { grid-template-columns: 1fr 1fr; } .stat-value { font-size: 28px; } .trend-item { padding: 14px 16px; gap: 10px; } .trend-name { font-size: 13px; } .brand-text h1 { font-size: 18px; } .app-container { padding: 16px 12px 40px; } .detail-panel { padding: 16px; } .results-panel { padding: 16px; } .results-panel .score-ring { width: 120px; height: 120px; } .results-panel .score-ring .inner { width: 92px; height: 92px; } .results-panel .score-ring .inner .number { font-size: 28px; } }
+        @media (max-width:380px) { .top-performers { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .stat-card { padding: 14px; } .stat-value { font-size: 22px; } }
     </style>
 </head>
 <body>
@@ -920,7 +384,6 @@
                 </div>
             </div>
 
-            <!-- ===== HEADER ACTIONS ===== -->
             <div class="header-actions">
                 <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
                     <i class="fas fa-moon" id="themeIcon"></i>
@@ -947,38 +410,27 @@
                     </div>
                 </div>
 
-                <!-- ===== MOVIE CAROUSEL - 300px x 78px ===== -->
                 <div class="movie-carousel" id="movieCarousel" title="Click to browse 2026 Amharic Movies">
                     <div class="carousel-label">
                         <span class="icon">🎬</span>
                     </div>
-                    <div class="carousel-track" id="movieTrack">
-                        <!-- Movie items injected by JS -->
-                    </div>
+                    <div class="carousel-track" id="movieTrack"></div>
                     <div class="carousel-overlay"></div>
                     <div class="click-hint">✦ click to expand</div>
                 </div>
             </div>
         </header>
 
-        <!-- ===== MOVIE FULLSCREEN OVERLAY ===== -->
         <div class="movie-overlay" id="movieOverlay">
             <div class="close-area" id="closeArea"></div>
             <div class="modal" id="movieModal">
                 <div class="modal-header">
-                    <h2>
-                        🎬 2026 Amharic Movies
-                        <span>— 10 most viewed</span>
-                    </h2>
+                    <h2>🎬 2026 Amharic Movies <span>— 10 most viewed</span></h2>
                     <button class="close-btn" id="closeModalBtn" aria-label="Close movie browser">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div class="movie-grid" id="movieGrid">
-                    <!-- Movie cards injected by JS -->
-                </div>
-
-                <!-- ===== MOVIE DETAIL POPUP (inside modal) ===== -->
+                <div class="movie-grid" id="movieGrid"></div>
                 <div class="movie-detail-overlay" id="movieDetailOverlay">
                     <div class="detail-card" id="detailCard">
                         <button class="detail-close" id="detailCloseBtn" aria-label="Close detail">
@@ -990,9 +442,7 @@
                             <span class="year" id="detailYear">2026</span>
                             <span class="genre" id="detailGenre">Drama</span>
                         </div>
-                        <div class="detail-desc" id="detailDesc">
-                            Description goes here.
-                        </div>
+                        <div class="detail-desc" id="detailDesc">Description goes here.</div>
                         <div class="detail-action">
                             <button class="btn-watch" id="detailWatchBtn"><i class="fas fa-play"></i> Watch Now</button>
                             <button class="btn-close-detail" id="detailCloseBtnAlt">Close</button>
@@ -1009,7 +459,6 @@
             <button class="tab" onclick="switchTab('profile')">👤 Profile</button>
         </div>
 
-        <!-- TRENDS -->
         <div class="tab-content active" id="tabTrends">
             <div class="stats-grid" id="statsGrid"></div>
             <div class="top-performers" id="topPerformers"></div>
@@ -1034,7 +483,6 @@
             <div id="detailPanel"></div>
         </div>
 
-        <!-- ANALYZE -->
         <div class="tab-content" id="tabAnalyze">
             <div style="margin-bottom:24px;">
                 <h2 style="font-size:22px;font-weight:600;">AI Content Analyzer</h2>
@@ -1075,7 +523,6 @@
             </div>
         </div>
 
-        <!-- AI TOOLS -->
         <div class="tab-content" id="tabAitools">
             <div style="margin-bottom:24px;">
                 <h2 style="font-size:22px;font-weight:600;">⚡ AI Power Tools</h2>
@@ -1118,7 +565,6 @@
             </div>
         </div>
 
-        <!-- PROFILE -->
         <div class="tab-content" id="tabProfile">
             <div style="background:var(--surface);border-radius:var(--radius-lg);padding:32px 24px;border:1px solid var(--border);position:relative;overflow:hidden;margin-bottom:20px;">
                 <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple));"></div>
@@ -1150,7 +596,7 @@
 
     <script>
         // ================================================================
-        // 🎬 MOVIE DATA — 10 Most Viewed Amharic Movies (2026)
+        // MOVIE DATA
         // ================================================================
 
         const movies2025 = [
@@ -1167,7 +613,7 @@
         ];
 
         // ================================================================
-        // DATA: CREATORS
+        // CREATOR DATA
         // ================================================================
 
         const tiktokCreators = [
@@ -1547,7 +993,7 @@
             { rank: '📈', name: 'Jon Daniel', stat: '+68.3K growth', desc: 'Highest Growth', badge: 'green' }
         ];
 
-        const feedTemplates = [
+        let feedTemplates = [
             { text: 'Freedom', views: '3.2M views', time: '2 min ago' },
             { text: 'Hope Music Ethiopia', views: '1.8M views', time: '3 hours ago' },
             { text: 'Danayit', views: '450K likes', time: '4 hours ago' },
@@ -1561,10 +1007,10 @@
         ];
 
         // ================================================================
-        // STATE
+        // GLOBAL STATE — All properties defined once
         // ================================================================
 
-        const state = {
+        let state = {
             isPremium: false,
             analysesUsed: 0,
             maxFree: 1,
@@ -1577,7 +1023,6 @@
             externalTrends: [],
             overlayOpen: false,
             detailOpen: false,
-            // Live data refresh
             refreshInterval: null,
             lastRefresh: Date.now()
         };
@@ -1586,7 +1031,7 @@
         const toast = $('toast');
 
         // ================================================================
-        // 🎬 MOVIE CAROUSEL — INIT & OVERLAY LOGIC
+        // MOVIE HELPERS
         // ================================================================
 
         function getThumbnail(movie) {
@@ -1629,10 +1074,13 @@
             }
         }
 
+        // ================================================================
+        // MOVIE CAROUSEL
+        // ================================================================
+
         function initMovieCarousel() {
             const track = document.getElementById('movieTrack');
             if (!track) return;
-
             const allMovies = [...movies2025, ...movies2025, ...movies2025];
             track.innerHTML = allMovies.map(movie => `
                 <div class="movie-item" title="${movie.title} (${movie.year})">
@@ -1651,7 +1099,6 @@
                 carousel.addEventListener('mouseleave', () => track.classList.remove('paused'));
                 carousel.addEventListener('click', openMovieOverlay);
             }
-
             setTimeout(updatePlaylistThumbnails, 500);
         }
 
@@ -1680,7 +1127,6 @@
                     openMovieDetail(idx);
                 });
             });
-
             setTimeout(updatePlaylistThumbnails, 500);
         }
 
@@ -1734,46 +1180,138 @@
         }
 
         // ================================================================
-        // 🔄 LIVE DATA REFRESH — Every 5 minutes
+        // LIVE ENGAGEMENT TICKER
         // ================================================================
 
-        // Realistic data updates based on Google/TikTok trends simulation
+        let engagementData = {
+            totalViews: 0,
+            totalLikes: 0,
+            totalComments: 0,
+            totalShares: 0,
+            activeUsers: 0,
+            lastUpdate: Date.now()
+        };
+
+        let engagementInterval = null;
+
+        function initEngagement() {
+            let views = 0, likes = 0, comments = 0, shares = 0;
+            allCreators.forEach(c => {
+                const num = parseFloat(c.volume.replace(/[^0-9.]/g, ''));
+                if (!isNaN(num)) {
+                    const multiplier = c.volume.includes('M') ? 1000000 : c.volume.includes('K') ? 1000 : 1;
+                    views += num * multiplier;
+                    likes += num * multiplier * 0.3;
+                    comments += num * multiplier * 0.08;
+                    shares += num * multiplier * 0.05;
+                }
+            });
+            engagementData.totalViews = Math.round(views);
+            engagementData.totalLikes = Math.round(likes);
+            engagementData.totalComments = Math.round(comments);
+            engagementData.totalShares = Math.round(shares);
+            engagementData.activeUsers = Math.round(views * 0.02);
+        }
+
+        function formatNumber(num) {
+            if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+            if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+            if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        function updateEngagement() {
+            const deltaViews = (Math.random() - 0.45) * 15000;
+            const deltaLikes = (Math.random() - 0.45) * 4000;
+            const deltaComments = (Math.random() - 0.45) * 800;
+            const deltaShares = (Math.random() - 0.45) * 500;
+
+            engagementData.totalViews = Math.max(0, engagementData.totalViews + Math.round(deltaViews));
+            engagementData.totalLikes = Math.max(0, engagementData.totalLikes + Math.round(deltaLikes));
+            engagementData.totalComments = Math.max(0, engagementData.totalComments + Math.round(deltaComments));
+            engagementData.totalShares = Math.max(0, engagementData.totalShares + Math.round(deltaShares));
+            engagementData.lastUpdate = Date.now();
+
+            const totalEngagement = engagementData.totalViews + engagementData.totalLikes + engagementData.totalComments + engagementData.totalShares;
+            const formatted = formatNumber(totalEngagement);
+            const change = Math.round((Math.random() - 0.4) * 800);
+            const sign = change >= 0 ? '+' : '';
+            const deltaClass = change >= 0 ? 'up' : 'down';
+
+            const engagementCard = document.querySelector('.stat-card.live-engagement');
+            if (engagementCard) {
+                const valueEl = engagementCard.querySelector('.live-engagement-value');
+                const deltaEl = engagementCard.querySelector('.engagement-delta');
+                if (valueEl) {
+                    valueEl.textContent = formatted;
+                    valueEl.classList.add('engagement-pulse');
+                    setTimeout(() => valueEl.classList.remove('engagement-pulse'), 2000);
+                }
+                if (deltaEl) {
+                    deltaEl.textContent = `${sign}${change}`;
+                    deltaEl.className = `engagement-delta ${deltaClass}`;
+                }
+            }
+
+            const liveStatus = document.getElementById('liveStatus');
+            if (liveStatus) {
+                liveStatus.textContent = `Live 🔥 ${new Date().toLocaleTimeString()}`;
+            }
+
+            const ticker = document.getElementById('feedTicker');
+            if (ticker && Math.random() > 0.7) {
+                const creators = allCreators.slice(0, 20);
+                const randomCreator = creators[Math.floor(Math.random() * creators.length)];
+                const viewChange = Math.round((Math.random() - 0.4) * 5000);
+                const sign2 = viewChange >= 0 ? '+' : '';
+                const el = document.createElement('span');
+                el.className = 'feed-item';
+                el.innerHTML = `
+                    <span class="highlight">${randomCreator.name}</span>
+                    <span class="sep">•</span>
+                    <span class="views">${sign2}${viewChange} new views</span>
+                    <span class="sep">•</span>
+                    <span style="color:var(--text-quaternary);font-size:11px;">just now</span>
+                `;
+                const first = ticker.querySelector('.feed-item');
+                if (first) ticker.insertBefore(el, first.nextSibling);
+                else ticker.appendChild(el);
+                const items = ticker.querySelectorAll('.feed-item');
+                if (items.length > 20) items[items.length - 1].remove();
+            }
+        }
+
+        function startEngagementTicker() {
+            initEngagement();
+            engagementInterval = setInterval(updateEngagement, 2000);
+            updateEngagement();
+        }
+
+        // ================================================================
+        // AUTO-REFRESH
+        // ================================================================
+
         function refreshLiveData() {
-            console.log('🔄 Refreshing live data...');
-            
-            // Simulate real-time changes to creator data
-            // Each creator gets a realistic fluctuation in growth and volume
             allCreators.forEach(creator => {
-                // Random growth fluctuation (-2% to +3%)
                 const growthDelta = (Math.random() * 5 - 2);
                 creator.growth = Math.round((creator.growth || 0) + growthDelta * 0.5);
-                
-                // Volume fluctuation - simulate real follower changes
+
                 const volumeStr = creator.volume || "1M";
                 let num = parseFloat(volumeStr.replace(/[^0-9.]/g, ''));
                 if (!isNaN(num) && num > 0) {
                     const unit = volumeStr.replace(/[0-9.]/g, '').trim();
-                    const change = (Math.random() * 0.3 - 0.1); // -0.1 to +0.2
+                    const change = (Math.random() * 0.3 - 0.1);
                     let newNum = num + change;
                     if (newNum < 0.1) newNum = 0.1;
-                    // Format based on unit
-                    if (unit === 'M') {
-                        creator.volume = newNum.toFixed(1) + 'M';
-                    } else if (unit === 'K') {
-                        creator.volume = Math.round(newNum * 10) / 10 + 'K';
-                    } else if (unit.includes('+')) {
-                        creator.volume = Math.round(newNum) + '+';
-                    } else if (unit.includes('~')) {
-                        creator.volume = '~' + Math.round(newNum) + 'K';
-                    } else {
-                        creator.volume = Math.round(newNum) + 'K';
-                    }
+                    if (unit === 'M') creator.volume = newNum.toFixed(1) + 'M';
+                    else if (unit === 'K') creator.volume = Math.round(newNum * 10) / 10 + 'K';
+                    else if (unit.includes('+')) creator.volume = Math.round(newNum) + '+';
+                    else if (unit.includes('~')) creator.volume = '~' + Math.round(newNum) + 'K';
+                    else creator.volume = Math.round(newNum) + 'K';
                 }
-                
-                // Sentiment fluctuation
+
                 creator.sentiment = Math.min(100, Math.max(0, creator.sentiment + (Math.random() * 4 - 2)));
-                
-                // Update recent post views
+
                 if (creator.recentPost) {
                     const viewsMatch = creator.recentPost.match(/([\d.]+[KMG]?)\s*views/);
                     if (viewsMatch) {
@@ -1785,25 +1323,22 @@
                             if (newViews < 0.1) newViews = 0.1;
                             const unitMap = { 'M': 'M', 'K': 'K', '': '' };
                             const u = unitMap[viewsUnit] || '';
-                            const formatted = u === 'M' ? newViews.toFixed(1) + 'M' : 
-                                              u === 'K' ? Math.round(newViews * 10) / 10 + 'K' : 
+                            const formatted = u === 'M' ? newViews.toFixed(1) + 'M' :
+                                              u === 'K' ? Math.round(newViews * 10) / 10 + 'K' :
                                               Math.round(newViews);
                             creator.recentPost = creator.recentPost.replace(/[\d.]+[KMG]?\s*views/, formatted + ' views');
                         }
                     }
                 }
             });
-            
-            // Re-sort creators by growth (trending)
+
             allCreators.sort((a, b) => b.growth - a.growth);
-            
-            // Re-render everything
+
             renderStats();
             renderList();
             renderTopPerformers();
             renderFeed();
-            
-            // Update feed ticker with new data
+
             const feedItems = allCreators.slice(0, 6).map(c => ({
                 text: c.name,
                 views: c.volume + ' followers',
@@ -1811,25 +1346,16 @@
             }));
             feedTemplates.splice(0, 6, ...feedItems);
             renderFeed();
-            
-            state.lastRefresh = Date.now();
-            const timeStr = new Date().toLocaleTimeString();
-            document.getElementById('liveStatus').textContent = `Live 🔥 ${timeStr}`;
-            
-            showToast(`📊 Data refreshed at ${timeStr} — ${allCreators.length} creators updated`, 'info');
-            console.log('✅ Data refreshed successfully');
+
+            document.getElementById('liveStatus').textContent = `Live 🔥 ${new Date().toLocaleTimeString()}`;
+            showToast(`📊 Data refreshed at ${new Date().toLocaleTimeString()}`, 'info');
         }
 
-        // Start the 5-minute refresh cycle
         function startAutoRefresh() {
-            if (state.refreshInterval) {
-                clearInterval(state.refreshInterval);
-            }
-            // First refresh after 30 seconds, then every 5 minutes
+            if (state.refreshInterval) clearInterval(state.refreshInterval);
             setTimeout(() => {
                 refreshLiveData();
                 state.refreshInterval = setInterval(refreshLiveData, 5 * 60 * 1000);
-                console.log('⏰ Auto-refresh started (every 5 minutes)');
             }, 30000);
         }
 
@@ -2000,15 +1526,26 @@
             const up = f.filter(t => t.growth > 0).length;
             const avg = total ? Math.round(f.reduce((s, t) => s + t.growth, 0) / total) : 0;
             const tf = f.reduce((s, t) => s + (parseFloat(t.volume.replace(/[^0-9.]/g, '')) || 0), 0);
+            const totalEngagement = engagementData.totalViews + engagementData.totalLikes + engagementData.totalComments + engagementData.totalShares;
+            const formattedEngagement = formatNumber(totalEngagement);
+            const change = Math.round((Math.random() - 0.4) * 800);
+            const sign = change >= 0 ? '+' : '';
+            const deltaClass = change >= 0 ? 'up' : 'down';
+
             $('statsGrid').innerHTML = [
                 { label: 'Total creators', value: total, delta: up + ' growing', type: 'neutral' },
                 { label: 'Avg growth', value: (avg > 0 ? '+' : '') + avg + '%', delta: avg >= 0 ? 'Expanding' :
                         'Contracting', type: avg >= 0 ? 'up' : 'down' },
                 { label: 'Total followers', value: (tf / 1000000).toFixed(1) + 'M', delta: 'Combined reach',
                     type: 'neutral' },
-                { label: 'Status', value: '🟢 Live', delta: 'Auto-refresh every 5m', type: 'neutral' }
+                { label: '📊 Live Engagement', value: `<span class="live-engagement-value">${formattedEngagement}</span>`,
+                    delta: `<span class="engagement-delta ${deltaClass}">${sign}${change}</span>`, type: 'neutral' }
             ].map(s =>
-                `<div class="stat-card"><div class="stat-label">${s.label}</div><div class="stat-value" style="color:${s.type === 'up' ? 'var(--accent-green)' : s.type === 'down' ? 'var(--accent-red)' : 'var(--text-primary)'}">${s.value}</div><div class="stat-delta ${s.type}">${s.delta}</div></div>`
+                `<div class="stat-card ${s.label === '📊 Live Engagement' ? 'live-engagement' : ''}">
+                    <div class="stat-label">${s.label}</div>
+                    <div class="stat-value" style="color:${s.type === 'up' ? 'var(--accent-green)' : s.type === 'down' ? 'var(--accent-red)' : 'var(--text-primary)'}">${s.value}</div>
+                    <div class="stat-delta ${s.type}">${s.delta}</div>
+                </div>`
             ).join('');
         }
 
@@ -2232,7 +1769,7 @@
         }
 
         // ================================================================
-        // FLAGGED CONTENT DETECTION (English + Amharic)
+        // FLAGGED CONTENT
         // ================================================================
 
         const flaggedEnglish = ['sex', 'porn', 'nude', 'naked', 'xxx', 'fuck', 'shit', 'bitch', 'whore', 'slut', 'dick',
@@ -2497,7 +2034,7 @@
         });
 
         // ================================================================
-        // AI TOOLS
+        // AI TOOLS - simplified versions
         // ================================================================
 
         function extractKeywords(text) {
@@ -2527,7 +2064,7 @@
             return allCreators.filter(c => c.category === cat).sort((a, b) => b.growth - a.growth).slice(0, 3);
         }
 
-        // ---- Caption Generator ----
+        // Caption Generator
         const captionGenBtn = $('captionGenBtn');
         const captionGenInput = $('captionGenInput');
         const captionGenOutput = $('captionGenOutput');
@@ -2578,7 +2115,7 @@
             }, 1200);
         });
 
-        // ---- Virality Predictor ----
+        // Virality Predictor
         const viralityBtn = $('viralityBtn');
         const viralityInput = $('viralityInput');
         const viralityOutput = $('viralityOutput');
@@ -2625,7 +2162,7 @@
             }, 1600);
         });
 
-        // ---- Content Optimizer ----
+        // Content Optimizer
         const optimizeBtn = $('optimizeBtn');
         const optimizeInput = $('optimizeInput');
         const optimizeOutput = $('optimizeOutput');
@@ -2770,6 +2307,65 @@
         });
 
         // ================================================================
+        // MOVIE OVERLAY EVENT LISTENERS
+        // ================================================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('movieOverlay');
+            const closeArea = document.getElementById('closeArea');
+            const closeBtn = document.getElementById('closeModalBtn');
+            const detailCloseBtn = document.getElementById('detailCloseBtn');
+            const detailCloseAlt = document.getElementById('detailCloseBtnAlt');
+
+            closeArea.addEventListener('click', closeMovieOverlay);
+            closeBtn.addEventListener('click', closeMovieOverlay);
+
+            detailCloseBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeMovieDetail();
+            });
+            detailCloseAlt.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeMovieDetail();
+            });
+
+            const detailOverlay = document.getElementById('movieDetailOverlay');
+            detailOverlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeMovieDetail();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    if (state.detailOpen) {
+                        closeMovieDetail();
+                    } else if (state.overlayOpen) {
+                        closeMovieOverlay();
+                    }
+                }
+            });
+
+            let hoverTimeout = null;
+            overlay.addEventListener('mouseleave', function(e) {
+                const related = e.relatedTarget;
+                if (related && overlay.contains(related)) return;
+                if (hoverTimeout) clearTimeout(hoverTimeout);
+                hoverTimeout = setTimeout(() => {
+                    if (state.overlayOpen && !state.detailOpen) {
+                        closeMovieOverlay();
+                    }
+                }, 400);
+            });
+            overlay.addEventListener('mouseenter', function() {
+                if (hoverTimeout) {
+                    clearTimeout(hoverTimeout);
+                    hoverTimeout = null;
+                }
+            });
+        });
+
+        // ================================================================
         // INIT
         // ================================================================
 
@@ -2782,46 +2378,48 @@
                 });
             }
 
+            // Initialize movie carousel
             initMovieCarousel();
 
+            // Initialize engagement
+            initEngagement();
+
+            // Render all UI
             renderFilters();
             renderStats();
             renderList();
             renderTopPerformers();
             renderFeed();
             updateStatsUI();
+
+            // Start external trends
             await updateExternalTrends();
             setInterval(updateExternalTrends, 5 * 60 * 1000);
             setInterval(renderFeed, 60000);
 
-            // Start the 5-minute auto-refresh
+            // Start engagement ticker (non-stop)
+            startEngagementTicker();
+
+            // Start auto-refresh for creator data (every 5 min)
             startAutoRefresh();
 
-            showToast('🔥 Welcome to EthioTrend AI — Live data refreshes every 5 minutes', 'success');
+            showToast('🔥 Welcome to EthioTrend AI — Live engagement ticker active', 'success');
         }
 
+        // Make functions globally available for onclick handlers
+        window.selectSuggestion = selectSuggestion;
+        window.handleSearchInput = handleSearchInput;
+        window.handleSearchFocus = handleSearchFocus;
+        window.handleSearchBlur = handleSearchBlur;
+        window.switchTab = switchTab;
+        window.setCategory = setCategory;
+        window.selectTrend = selectTrend;
+        window.closeDetail = closeDetail;
+        window.toggleTheme = toggleTheme;
+
+        // Start the app
         initApp();
-
-        // Simulated live feed updates
-        setInterval(() => {
-            const item = feedTemplates[Math.floor(Math.random() * feedTemplates.length)];
-            const announcer = document.getElementById('feedAnnouncer');
-            if (announcer) announcer.textContent = `Live update: ${item.text} — ${item.views}`;
-            const ticker = document.getElementById('feedTicker');
-            if (ticker) {
-                const el = document.createElement('span');
-                el.className = 'feed-item';
-                el.innerHTML =
-                    `<span class="highlight">${item.text}</span><span class="sep">•</span><span class="views">${item.views}</span><span class="sep">•</span><span style="color:var(--text-quaternary);font-size:11px;">${item.time}</span>`;
-                const first = ticker.querySelector('.feed-item');
-                if (first) ticker.insertBefore(el, first.nextSibling);
-                else ticker.appendChild(el);
-                const items = ticker.querySelectorAll('.feed-item');
-                if (items.length > 20) items[items.length - 1].remove();
-            }
-        }, 28000);
-
-        console.log('✅ EthioTrend AI initialized — Bigger carousel (300x78) + 5-min auto-refresh');
+        console.log('✅ EthioTrend AI initialized with non-stop engagement ticker');
     </script>
 
 </body>

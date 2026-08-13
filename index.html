@@ -187,6 +187,23 @@
             }
         }
 
+        .trend-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 600;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            cursor: default;
+        }
+        .trend-indicator i {
+            font-size: 12px;
+        }
+
         .premium-badge {
             padding: 6px 16px;
             border-radius: 999px;
@@ -1052,7 +1069,7 @@
             font-size: 13px;
             color: var(--text-secondary);
             display: none;
-            max-height: 260px;
+            max-height: 280px;
             overflow-y: auto;
             white-space: pre-wrap;
             word-break: break-word;
@@ -1460,6 +1477,9 @@
                     <span class="dot"></span>
                     <span id="liveStatus">Live 🔥</span>
                 </div>
+                <div class="trend-indicator" id="trendIndicator" title="Real-time external trends">
+                    <i class="fas fa-globe"></i> <span id="trendSource">External</span>
+                </div>
                 <div class="premium-badge free" id="premiumBadge" onclick="switchTab('profile')">
                     <i class="fas fa-crown"></i> <span id="planLabel">Free Plan</span>
                 </div>
@@ -1558,7 +1578,7 @@
         <div class="tab-content" id="tabAitools">
             <div style="margin-bottom: 24px;">
                 <h2 style="font-size: 22px; font-weight: 600;">⚡ AI Power Tools</h2>
-                <p style="color: var(--text-secondary); font-size: 14px;">Data-driven AI insights — recommendations based on real Ethiopian creator trends</p>
+                <p style="color: var(--text-secondary); font-size: 14px;">Powered by <span id="externalLabel">real-time external trends</span> 🌐</p>
             </div>
 
             <div class="ai-tools-grid">
@@ -1567,7 +1587,7 @@
                 <div class="ai-tool-card">
                     <span class="tool-icon">✍️</span>
                     <h3>Caption Generator</h3>
-                    <p>Enter a topic — AI analyzes trending Ethiopian creators to suggest viral captions</p>
+                    <p>Enter a topic — AI generates captions with current external trends</p>
                     <input type="text" id="captionGenInput" placeholder="e.g. Ethiopian coffee, Addis Ababa, Habesha wedding..." />
                     <button class="ai-tool-btn" id="captionGenBtn"><i class="fas fa-wand-magic-sparkles"></i> Generate Captions</button>
                     <div class="ai-tool-output" id="captionGenOutput">
@@ -1580,7 +1600,7 @@
                 <div class="ai-tool-card">
                     <span class="tool-icon">📈</span>
                     <h3>Virality Predictor</h3>
-                    <p>AI compares your content against top Ethiopian creators to predict viral potential</p>
+                    <p>AI analyzes your content against external trends and local creators</p>
                     <textarea id="viralityInput" placeholder="Describe your video content in detail..."></textarea>
                     <button class="ai-tool-btn" id="viralityBtn"><i class="fas fa-chart-line"></i> Predict Virality</button>
                     <div class="ai-tool-output" id="viralityOutput">
@@ -1593,7 +1613,7 @@
                 <div class="ai-tool-card">
                     <span class="tool-icon">🚀</span>
                     <h3>Content Optimizer</h3>
-                    <p>AI analyzes your content against top-performing creators and gives actionable tips</p>
+                    <p>AI leverages external trends to give you the best optimization tips</p>
                     <textarea id="optimizeInput" placeholder="Paste your caption or content description..."></textarea>
                     <button class="ai-tool-btn" id="optimizeBtn"><i class="fas fa-rocket"></i> Optimize Content</button>
                     <div class="ai-tool-output" id="optimizeOutput">
@@ -2068,7 +2088,8 @@
             searchQuery: '',
             selectedId: null,
             analysisHistory: [],
-            isProcessing: false
+            isProcessing: false,
+            externalTrends: [] // will hold fetched trending topics
         };
 
         const $ = id => document.getElementById(id);
@@ -2561,33 +2582,312 @@
         }
 
         // ================================================================
-        // AI ANALYSIS (existing)
+        // ================================================================
+        // 🌐 EXTERNAL TRENDS FETCHER
+        // ================================================================
         // ================================================================
 
-        function generateTips(caption, score) {
-            const tips = [];
-            if (score < 70) {
-                tips.push({ icon: '🎯', text: 'Make your hook stronger in the first 3 seconds' });
-                tips.push({ icon: '📱', text: 'Shoot in vertical format (9:16) for better engagement' });
-                tips.push({ icon: '🔥', text: 'Add trending audio or music to boost reach' });
-            } else if (score < 85) {
-                tips.push({ icon: '🔥', text: 'Add trending audio or music to boost reach' });
-                tips.push({ icon: '💬', text: 'Ask viewers a question to encourage comments' });
-                tips.push({ icon: '🏷️', text: 'Use 3-5 relevant hashtags for discoverability' });
-            } else {
-                tips.push({ icon: '🚀', text: 'Great content! Post between 7-9 PM EAT' });
-                tips.push({ icon: '💎', text: 'Add a call-to-action: "Follow for more!"' });
-                tips.push({ icon: '📊', text: 'Post 3-5 times per week for algorithm boost' });
+        async function fetchExternalTrends() {
+            try {
+                // Use a proxy to fetch Google News RSS for Ethiopia
+                const url = 'https://api.allorigins.win/raw?url=' +
+                    encodeURIComponent('https://news.google.com/rss/search?q=ethiopia&hl=en-US&gl=US&ceid=US:en');
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network error');
+                const xmlText = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+                const items = xmlDoc.querySelectorAll('item');
+                const titles = [];
+                items.forEach(item => {
+                    const title = item.querySelector('title')?.textContent;
+                    if (title && !title.includes(' - ') && !title.includes('|')) {
+                        // Clean and shorten
+                        let clean = title.replace(/\(.*?\)/g, '').trim();
+                        if (clean.length > 60) clean = clean.substring(0, 60) + '...';
+                        if (clean.length > 5) titles.push(clean);
+                    }
+                });
+                // Also extract from description as fallback
+                if (titles.length < 3) {
+                    items.forEach(item => {
+                        const desc = item.querySelector('description')?.textContent;
+                        if (desc) {
+                            const words = desc.split(/\s+/).slice(0, 10).join(' ');
+                            if (words.length > 10) titles.push(words);
+                        }
+                    });
+                }
+                // Remove duplicates
+                const unique = [...new Set(titles)];
+                return unique.slice(0, 12);
+            } catch (e) {
+                console.warn('External trends fetch failed:', e);
+                return null;
             }
-            tips.push({ icon: '📱', text: 'TikTok/Reels: Keep videos 15-30 seconds for best retention' });
-            return tips;
         }
 
-        function generateHashtags(caption) {
-            const baseHashtags = ['#Ethiopia', '#AddisAbaba', '#EthioTrend', '#EthiopianTikTok'];
-            const contentHashtags = [];
-            const keywords = caption.toLowerCase().split(' ');
-            const tagMap = {
+        // Cache external trends and update periodically
+        let externalTrendsCache = [];
+        let lastFetchTime = 0;
+        const FETCH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+        async function updateExternalTrends() {
+            const now = Date.now();
+            if (now - lastFetchTime < FETCH_INTERVAL && externalTrendsCache.length > 0) {
+                return externalTrendsCache;
+            }
+            const trends = await fetchExternalTrends();
+            if (trends && trends.length > 0) {
+                externalTrendsCache = trends;
+                lastFetchTime = now;
+                // Update UI indicator
+                const indicator = document.getElementById('trendSource');
+                if (indicator) indicator.textContent = 'Live 🌐';
+                // Update AI tools label
+                const label = document.getElementById('externalLabel');
+                if (label) label.textContent = 'real-time external news trends';
+                // Show toast only once per update
+                showToast('🌐 External trends refreshed', 'info');
+            } else {
+                // Fallback to local trending topics from creators
+                const fallback = getTrendingTopics().slice(0, 10);
+                externalTrendsCache = fallback;
+                const indicator = document.getElementById('trendSource');
+                if (indicator) indicator.textContent = 'Local 📊';
+            }
+            return externalTrendsCache;
+        }
+
+        // ---- Helper: local trending topics from creators ----
+        function getTrendingTopics() {
+            const topics = {};
+            allCreators.forEach(c => {
+                const words = (c.desc + ' ' + c.name).toLowerCase().split(/\s+/);
+                words.forEach(w => {
+                    if (w.length > 3) {
+                        topics[w] = (topics[w] || 0) + 1;
+                    }
+                });
+            });
+            const sorted = Object.entries(topics).sort((a, b) => b[1] - a[1]);
+            return sorted.slice(0, 10).map(([word]) => word);
+        }
+
+        // ================================================================
+        // 🤖 REAL AI ENGINE — Uses external trends
+        // ================================================================
+
+        // ---- Core AI: analyze text with external trends context ----
+        function analyzeText(text, externalTrends = []) {
+            if (!text || text.trim().length === 0) {
+                return {
+                    score: 0,
+                    sentiment: 'neutral',
+                    sentimentScore: 50,
+                    wordCount: 0,
+                    hasEmojis: false,
+                    hasQuestions: false,
+                    hasCta: false,
+                    topics: [],
+                    flagged: [],
+                    quality: 'empty',
+                    trendMatch: 0
+                };
+            }
+
+            const lower = text.toLowerCase();
+
+            // --- Sentiment ---
+            const positiveWords = ['love', '❤️', 'amazing', 'great', 'awesome', 'wonderful', 'beautiful', 'happy', 'joy', 'excited',
+                'blessed', 'grateful', 'incredible', 'fantastic', 'brilliant', 'perfect', 'best', 'favorite', 'enjoy',
+                'thank', '🙏', '✨', '🔥', '💯'
+            ];
+            const negativeWords = ['hate', 'bad', 'terrible', 'awful', 'horrible', 'sad', 'angry', 'frustrated', 'disappointed',
+                'worst', 'waste', 'boring', 'stupid', 'dumb', 'annoying', 'useless', 'failure', 'miss', 'lost', '😡', '💔',
+                '😭'
+            ];
+            const intenseWords = ['insane', 'crazy', 'wild', '🔥', '💯', '🚀', 'bomb', 'killer', 'epic', 'legend', 'god',
+                'queen', 'king'
+            ];
+
+            let posScore = 0,
+                negScore = 0,
+                intenseScore = 0;
+            const words = text.split(/\s+/);
+
+            for (const w of words) {
+                const clean = w.replace(/[^a-zA-Z]/g, '').toLowerCase();
+                if (positiveWords.some(p => clean.includes(p) || w.includes(p))) posScore++;
+                if (negativeWords.some(n => clean.includes(n) || w.includes(n))) negScore++;
+                if (intenseWords.some(i => clean.includes(i) || w.includes(i))) intenseScore++;
+            }
+
+            const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FEFF}]/u;
+            const hasEmojis = emojiRegex.test(text);
+            const hasQuestions = text.includes('?');
+            const ctaWords = ['comment', 'like', 'share', 'follow', 'subscribe', 'click', 'tag', 'dm', 'message', 'send',
+                'react', 'reply', 'join', 'visit', 'check'
+            ];
+            const hasCta = ctaWords.some(c => lower.includes(c));
+
+            const flaggedWords = ['sex', 'porn', 'nude', 'naked', 'xxx', 'fuck', 'shit', 'bitch', 'whore', 'slut', 'dick',
+                'cock', 'pussy', 'asshole', 'bastard', 'cunt', 'motherfucker'
+            ];
+            const flagged = flaggedWords.filter(f => lower.includes(f));
+
+            // Topic extraction - include external trends
+            const ethiopiaTopics = ['ethiopia', 'addis', 'habesha', 'amhara', 'oromia', 'tigray', 'somali', 'afar', 'gurage',
+                'sidama', 'ኢትዮጵያ', 'አዲስ', 'አማራ', 'ኦሮሚያ'
+            ];
+            const contentTopics = ['music', 'dance', 'food', 'coffee', 'comedy', 'fashion', 'travel', 'culture', 'wedding',
+                'church', 'art', 'tech', 'fitness', 'beauty', 'lifestyle'
+            ];
+            const topics = [];
+            for (const t of ethiopiaTopics) {
+                if (lower.includes(t)) topics.push(t);
+            }
+            for (const t of contentTopics) {
+                if (lower.includes(t)) topics.push(t);
+            }
+            // Check external trends match
+            let trendMatch = 0;
+            for (const trend of externalTrends) {
+                if (lower.includes(trend.toLowerCase())) trendMatch++;
+            }
+            // Add external trend topics
+            if (trendMatch > 0) {
+                topics.push('trending');
+            }
+
+            const uniqueTopics = [...new Set(topics)];
+
+            // Sentiment score
+            const totalSentiment = posScore + negScore;
+            let sentimentScore = 50;
+            if (totalSentiment > 0) {
+                sentimentScore = 50 + ((posScore - negScore) / totalSentiment) * 40;
+            }
+            sentimentScore = Math.max(0, Math.min(100, sentimentScore));
+
+            // Quality score
+            let qualityScore = 40;
+            qualityScore += Math.min(20, words.length / 2);
+            if (hasEmojis) qualityScore += 10;
+            if (hasQuestions) qualityScore += 8;
+            if (hasCta) qualityScore += 12;
+            if (uniqueTopics.length > 0) qualityScore += 10;
+            if (intenseScore > 0) qualityScore += 5;
+            if (trendMatch > 0) qualityScore += 15; // bonus for trending topics
+
+            if (flagged.length > 0) {
+                qualityScore = Math.max(0, qualityScore - 30);
+                sentimentScore = Math.max(0, sentimentScore - 20);
+            }
+
+            qualityScore = Math.min(100, Math.max(0, qualityScore));
+
+            let sentiment = 'neutral';
+            if (sentimentScore >= 70) sentiment = 'positive';
+            else if (sentimentScore <= 30) sentiment = 'negative';
+
+            let quality = 'average';
+            if (qualityScore >= 80) quality = 'excellent';
+            else if (qualityScore >= 60) quality = 'good';
+            else if (qualityScore < 40) quality = 'poor';
+
+            return {
+                score: qualityScore,
+                sentiment: sentiment,
+                sentimentScore: Math.round(sentimentScore),
+                wordCount: words.length,
+                hasEmojis: hasEmojis,
+                hasQuestions: hasQuestions,
+                hasCta: hasCta,
+                topics: uniqueTopics,
+                flagged: flagged,
+                quality: quality,
+                intensity: intenseScore,
+                trendMatch: trendMatch,
+                externalTrends: externalTrends.slice(0, 5)
+            };
+        }
+
+        // ---- Generate viral score ----
+        function generateViralScore(analysis) {
+            let base = 30;
+            if (analysis.quality === 'excellent') base += 35;
+            else if (analysis.quality === 'good') base += 20;
+            else if (analysis.quality === 'average') base += 8;
+            else base += 0;
+
+            if (analysis.hasEmojis) base += 8;
+            if (analysis.hasQuestions) base += 6;
+            if (analysis.hasCta) base += 10;
+            if (analysis.sentiment === 'positive') base += 10;
+            else if (analysis.sentiment === 'negative') base -= 5;
+            base += Math.min(15, analysis.topics.length * 3);
+            base += Math.min(10, analysis.intensity * 2);
+            base += Math.min(20, analysis.trendMatch * 5); // external trend bonus
+
+            if (analysis.flagged.length > 0) base = Math.max(0, base - 25);
+
+            return Math.min(98, Math.max(0, Math.round(base)));
+        }
+
+        // ---- Generate tips with external trends ----
+        function generateIntelligentTips(analysis, text) {
+            const tips = [];
+            const lower = text.toLowerCase();
+
+            if (analysis.wordCount < 5) {
+                tips.push({ icon: '📝', text: 'Your description is too short. Add more detail to help the algorithm understand your content.' });
+            }
+            if (!analysis.hasEmojis) {
+                tips.push({ icon: '🎨', text: 'Add emojis to make your caption more engaging and eye-catching.' });
+            }
+            if (!analysis.hasQuestions) {
+                tips.push({ icon: '❓', text: 'Ask a question to boost engagement and encourage comments.' });
+            }
+            if (!analysis.hasCta) {
+                tips.push({ icon: '📢', text: 'Add a call-to-action (e.g., "Comment below!", "Share this!") to drive interaction.' });
+            }
+            if (analysis.sentiment === 'negative') {
+                tips.push({ icon: '😊', text: 'Try a more positive tone — positive content tends to perform better on social media.' });
+            }
+            if (analysis.flagged.length > 0) {
+                tips.push({ icon: '🚫', text: '⚠️ Your content contains inappropriate language. Revise to avoid being flagged.' });
+            }
+            if (analysis.topics.length === 0) {
+                tips.push({ icon: '🏷️', text: 'Mention specific topics (e.g., coffee, music, Addis) to help with discoverability.' });
+            } else {
+                tips.push({ icon: '🎯', text: `Great! You mentioned: ${analysis.topics.slice(0, 3).join(', ')} — this helps with relevance.` });
+            }
+
+            // External trend tips
+            if (analysis.trendMatch > 0 && analysis.externalTrends.length > 0) {
+                tips.push({ icon: '🔥', text: `Your content aligns with trending topics: ${analysis.externalTrends.slice(0, 2).join(', ')} — leverage this!` });
+            } else if (analysis.externalTrends.length > 0) {
+                tips.push({ icon: '📰', text: `Consider incorporating: ${analysis.externalTrends.slice(0, 3).join(', ')} — these are trending now.` });
+            }
+
+            if (analysis.quality === 'excellent') {
+                tips.push({ icon: '🚀', text: 'Excellent content! Post between 7-9 PM EAT for maximum reach in Ethiopia.' });
+            } else if (analysis.quality === 'good') {
+                tips.push({ icon: '📈', text: 'Good content! Add a trending Ethiopian song or hashtag to boost virality.' });
+            } else if (analysis.quality === 'poor') {
+                tips.push({ icon: '💡', text: 'Your content needs more structure. Start with a strong hook in the first 2 seconds.' });
+            }
+
+            return tips.slice(0, 7);
+        }
+
+        // ---- Generate hashtags with external trends ----
+        function generateIntelligentHashtags(analysis, text) {
+            const lower = text.toLowerCase();
+            const hashtags = ['#Ethiopia', '#AddisAbaba', '#EthioTrend'];
+
+            const topicMap = {
                 'music': '#EthiopianMusic',
                 'dance': '#EthioDance',
                 'food': '#EthiopianFood',
@@ -2600,92 +2900,39 @@
                 'church': '#EthiopianOrthodox',
                 'art': '#EthiopianArt',
                 'tech': '#EthioTech',
-                'tiktok': '#EthiopianTikTok',
-                'habesha': '#Habesha',
-                'addis': '#AddisAbaba'
+                'fitness': '#EthioFitness',
+                'beauty': '#EthioBeauty',
+                'lifestyle': '#EthiopianLifestyle',
+                'trending': '#TrendingNow'
             };
-            for (const word of keywords) {
-                if (tagMap[word] && !contentHashtags.includes(tagMap[word])) {
-                    contentHashtags.push(tagMap[word]);
+
+            const added = new Set();
+            for (const topic of analysis.topics) {
+                const tag = topicMap[topic];
+                if (tag && !added.has(tag)) {
+                    hashtags.push(tag);
+                    added.add(tag);
                 }
             }
-            return [...baseHashtags, ...contentHashtags].slice(0, 8);
-        }
 
-        function showResults(score, tips, hashtags) {
-            const resultsBox = $('resultsBox');
-            resultsBox.classList.add('show');
-
-            const ring = $('scoreRing');
-            ring.style.setProperty('--score', score);
-
-            $('scoreNumber').textContent = score + '%';
-
-            const badge = $('scoreBadge');
-            if (score >= 80) {
-                badge.textContent = '🌟 High Viral Potential';
-                badge.className = 'score-badge high';
-            } else if (score >= 60) {
-                badge.textContent = '📈 Moderate Potential';
-                badge.className = 'score-badge medium';
-            } else {
-                badge.textContent = '📉 Needs Improvement';
-                badge.className = 'score-badge low';
+            // Add external trend hashtags
+            for (const trend of analysis.externalTrends.slice(0, 2)) {
+                const tag = '#' + trend.replace(/\s/g, '');
+                if (!added.has(tag) && tag.length < 30) {
+                    hashtags.push(tag);
+                    added.add(tag);
+                }
             }
 
-            $('tipsContainer').innerHTML = tips.map(tip => `
-                <div class="tip-item">
-                    <span class="icon">${tip.icon}</span>
-                    <span class="text">${tip.text}</span>
-                </div>
-            `).join('');
+            if (analysis.sentiment === 'positive') hashtags.push('#PositiveVibes');
+            if (analysis.hasEmojis) hashtags.push('#ViralContent');
+            if (analysis.wordCount > 20) hashtags.push('#TrendingNow');
 
-            $('hashtagsContainer').innerHTML = hashtags.map(tag => `
-                <span class="hashtag-chip">${tag}</span>
-            `).join('');
-
-            resultsBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function updateStatsUI() {
-            $('statAnalyses').textContent = state.totalAnalyses;
-            $('statTrends').textContent = state.trendsFound;
-            $('statViral').textContent = state.viralHits;
-            const remaining = state.isPremium ? '♾️' : Math.max(0, state.maxFree - state.analysesUsed);
-            $('statFreeRemaining').textContent = remaining;
-            $('freeRemaining').textContent = remaining;
-
-            if (state.isPremium) {
-                $('premiumStatus').style.display = 'inline';
-                $('freeRemaining').parentElement.innerHTML = '♾️ Unlimited (Premium)';
-            }
-
-            const premiumBadge = $('premiumBadge');
-            const planLabel = $('planLabel');
-            if (state.isPremium) {
-                premiumBadge.className = 'premium-badge';
-                planLabel.textContent = '⭐ Premium';
-            } else {
-                premiumBadge.className = 'premium-badge free';
-                planLabel.textContent = 'Free Plan';
-            }
-
-            const profileBadge = $('profilePlanBadge');
-            if (state.isPremium) {
-                profileBadge.textContent = '⭐ Premium';
-                profileBadge.style.background = 'rgba(252, 221, 9, 0.15)';
-                profileBadge.style.color = 'var(--accent-gold)';
-                profileBadge.style.borderColor = 'rgba(252, 221, 9, 0.2)';
-            } else {
-                profileBadge.textContent = 'Free Plan';
-                profileBadge.style.background = 'rgba(255,255,255,0.05)';
-                profileBadge.style.color = 'var(--text-tertiary)';
-                profileBadge.style.borderColor = 'var(--border)';
-            }
+            return hashtags.slice(0, 10);
         }
 
         // ================================================================
-        // ANALYZE BUTTON
+        // ANALYZE BUTTON — Uses external trends
         // ================================================================
 
         const analyzeBtn = $('analyzeBtn');
@@ -2702,7 +2949,7 @@
             }
         });
 
-        analyzeBtn.addEventListener('click', function() {
+        analyzeBtn.addEventListener('click', async function() {
             const caption = captionInput.value.trim();
             const hasVideo = videoInput.files && videoInput.files.length > 0;
 
@@ -2717,15 +2964,63 @@
                 return;
             }
 
-            this.innerHTML = '<span class="spinner-sm"></span> Analyzing...';
+            const textToAnalyze = caption || "Video content uploaded for analysis.";
+
+            this.innerHTML = '<span class="spinner-sm"></span> AI analyzing...';
             this.disabled = true;
 
-            setTimeout(() => {
-                const score = Math.floor(Math.random() * 41) + 60;
-                const tips = generateTips(caption, score);
-                const hashtags = generateHashtags(caption);
+            // Get fresh external trends
+            const trends = await updateExternalTrends();
 
-                showResults(score, tips, hashtags);
+            setTimeout(() => {
+                const analysis = analyzeText(textToAnalyze, trends);
+                const score = generateViralScore(analysis);
+                const tips = generateIntelligentTips(analysis, textToAnalyze);
+                const hashtags = generateIntelligentHashtags(analysis, textToAnalyze);
+
+                let desc = `📊 ${analysis.wordCount} words • ${analysis.sentiment} sentiment`;
+                if (analysis.topics.length > 0) {
+                    desc += ` • Topics: ${analysis.topics.slice(0, 3).join(', ')}`;
+                }
+                if (analysis.trendMatch > 0) {
+                    desc += ` • 🔥 ${analysis.trendMatch} external trend matches`;
+                }
+                if (analysis.flagged.length > 0) {
+                    desc += ' ⚠️ Contains flagged content';
+                }
+
+                const resultsBox = $('resultsBox');
+                resultsBox.classList.add('show');
+
+                const ring = $('scoreRing');
+                ring.style.setProperty('--score', score);
+
+                $('scoreNumber').textContent = score + '%';
+
+                const badge = $('scoreBadge');
+                if (score >= 80) {
+                    badge.textContent = '🌟 High Viral Potential';
+                    badge.className = 'score-badge high';
+                } else if (score >= 60) {
+                    badge.textContent = '📈 Moderate Potential';
+                    badge.className = 'score-badge medium';
+                } else {
+                    badge.textContent = '📉 Needs Improvement';
+                    badge.className = 'score-badge low';
+                }
+
+                $('resultDesc').textContent = desc;
+
+                $('tipsContainer').innerHTML = tips.map(tip => `
+                    <div class="tip-item">
+                        <span class="icon">${tip.icon}</span>
+                        <span class="text">${tip.text}</span>
+                    </div>
+                `).join('');
+
+                $('hashtagsContainer').innerHTML = hashtags.map(tag => `
+                    <span class="hashtag-chip">${tag}</span>
+                `).join('');
 
                 state.analysesUsed++;
                 state.totalAnalyses++;
@@ -2735,58 +3030,19 @@
 
                 this.innerHTML = '<i class="fas fa-magic"></i> Analyze Content';
                 this.disabled = false;
-                showToast('✅ Analysis complete!', 'success');
-            }, 2000);
+
+                resultsBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                const scoreLabel = score >= 80 ? 'high' : score >= 60 ? 'moderate' : 'low';
+                showToast(`✅ Analysis complete! Viral score: ${score}% (${scoreLabel})`, 'success');
+            }, 1800);
         });
 
         // ================================================================
-        // ================================================================
-        // 🤖 REAL AI POWER TOOLS — Data-Driven Intelligence
-        // ================================================================
+        // AI POWER TOOLS — Use external trends
         // ================================================================
 
-        // ---- Helper: Extract keywords from text ----
-        function extractKeywords(text) {
-            const words = text.toLowerCase().split(/\s+/);
-            const stopWords = ['the', 'a', 'an', 'of', 'for', 'on', 'at', 'to', 'in', 'with', 'by', 'from', 'up', 'about',
-                'into', 'through', 'during', 'without', 'after', 'before', 'under', 'over', 'between'
-            ];
-            return words.filter(w => w.length > 2 && !stopWords.includes(w));
-        }
-
-        // ---- Helper: Find top matching creators based on keywords ----
-        function findMatchingCreators(keywords, limit = 5) {
-            const scores = allCreators.map(c => {
-                const text = (c.name + ' ' + c.desc + ' ' + (c.username || '') + ' ' + c.category).toLowerCase();
-                let score = 0;
-                for (const kw of keywords) {
-                    if (text.includes(kw)) score += 2;
-                    if (c.name.toLowerCase().includes(kw)) score += 3;
-                    if (c.category && c.category.includes(kw)) score += 1;
-                    if (c.desc && c.desc.toLowerCase().includes(kw)) score += 1;
-                }
-                return { ...c, matchScore: score };
-            });
-            scores.sort((a, b) => b.matchScore - a.matchScore);
-            return scores.filter(c => c.matchScore > 0).slice(0, limit);
-        }
-
-        // ---- Helper: Get trending topics from creators ----
-        function getTrendingTopics() {
-            const topics = {};
-            allCreators.forEach(c => {
-                const words = (c.desc + ' ' + c.name).toLowerCase().split(/\s+/);
-                words.forEach(w => {
-                    if (w.length > 3) {
-                        topics[w] = (topics[w] || 0) + 1;
-                    }
-                });
-            });
-            const sorted = Object.entries(topics).sort((a, b) => b[1] - a[1]);
-            return sorted.slice(0, 12).map(([word]) => word);
-        }
-
-        // ---- Helper: Get top performing creators by category ----
+        // ---- Helper: get top creators by category ----
         function getTopByCategory(category) {
             return allCreators.filter(c => c.category === category)
                 .sort((a, b) => b.growth - a.growth)
@@ -2794,7 +3050,7 @@
         }
 
         // ================================================================
-        // TOOL 1: CAPTION GENERATOR — Data-Driven
+        // TOOL 1: CAPTION GENERATOR
         // ================================================================
 
         const captionGenBtn = $('captionGenBtn');
@@ -2802,34 +3058,35 @@
         const captionGenOutput = $('captionGenOutput');
         const captionGenResults = $('captionGenResults');
 
-        captionGenBtn.addEventListener('click', function() {
+        captionGenBtn.addEventListener('click', async function() {
             const input = captionGenInput.value.trim();
             if (!input) {
                 showToast('⚠️ Please enter a topic or keywords', 'error');
                 return;
             }
 
-            this.innerHTML = '<span class="spinner-sm"></span> Analyzing trends...';
+            this.innerHTML = '<span class="spinner-sm"></span> AI generating...';
             this.disabled = true;
 
-            setTimeout(() => {
-                const keywords = extractKeywords(input);
-                const matched = findMatchingCreators(keywords, 4);
-                const trendingTopics = getTrendingTopics().slice(0, 6);
-                const topTikTok = getTopByCategory('tiktok');
-                const topInsta = getTopByCategory('instagram');
-                const topYT = getTopByCategory('youtube');
+            const trends = await updateExternalTrends();
+            const keywords = extractKeywords(input);
+            const matched = findMatchingCreators(keywords, 4);
 
-                // Build context-aware captions
+            setTimeout(() => {
                 const topic = keywords.slice(0, 2).join(' ') || input;
                 const hashtags = ['#Ethiopia', '#AddisAbaba', '#EthioTrend', '#' + topic.replace(/\s/g, '')].slice(0, 4);
+                // Add external trend hashtags
+                if (trends.length > 0) {
+                    const trendTag = '#' + trends[0].replace(/\s/g, '');
+                    if (!hashtags.includes(trendTag)) hashtags.push(trendTag);
+                }
 
                 let creatorRef = '';
                 if (matched.length > 0) {
                     const top = matched[0];
                     creatorRef = `🔥 Like @${top.username || top.name} — `;
-                } else if (topTikTok.length > 0) {
-                    creatorRef = `🎵 Inspired by @${topTikTok[0].username || topTikTok[0].name} — `;
+                } else if (trends.length > 0) {
+                    creatorRef = `📰 Trending now: ${trends[0]} — `;
                 }
 
                 const captions = [
@@ -2841,27 +3098,32 @@
                     `🌟 Ethiopian ${topic} — comment your favorite moment! #AddisAbaba #${topic.replace(/\s/g, '')}`
                 ];
 
-                // Shuffle and pick 4
                 const shuffled = shuffleArray([...captions]);
                 const selected = shuffled.slice(0, 4);
+
+                let trendInfo = '';
+                if (trends.length > 0) {
+                    trendInfo = `🌐 External trends: ${trends.slice(0, 3).join(', ')}`;
+                }
 
                 captionGenResults.innerHTML = selected.map((c, i) =>
                     `<div class="result-item"><span class="tag">#${i+1}</span> ${c}</div>`
                 ).join('') +
                 `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--text-tertiary);">
                     📊 Based on ${matched.length > 0 ? matched.map(m => m.name).join(', ') : 'trending Ethiopian creators'}
-                    ${matched.length > 0 ? ` — top match: ${matched[0].name} (${matched[0].volume} followers)` : ''}
+                    ${matched.length > 0 ? ` — top match: ${matched[0].name}` : ''}
+                    ${trendInfo ? ' • ' + trendInfo : ''}
                 </div>`;
 
                 captionGenOutput.classList.add('show');
                 this.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Captions';
                 this.disabled = false;
-                showToast(`✨ ${selected.length} captions generated from live data`, 'success');
-            }, 1400);
+                showToast(`✨ ${selected.length} captions generated with external trends`, 'success');
+            }, 1200);
         });
 
         // ================================================================
-        // TOOL 2: VIRALITY PREDICTOR — Data-Driven
+        // TOOL 2: VIRALITY PREDICTOR — Uses external trends
         // ================================================================
 
         const viralityBtn = $('viralityBtn');
@@ -2869,70 +3131,67 @@
         const viralityOutput = $('viralityOutput');
         const viralityResults = $('viralityResults');
 
-        viralityBtn.addEventListener('click', function() {
+        viralityBtn.addEventListener('click', async function() {
             const input = viralityInput.value.trim();
             if (!input) {
                 showToast('⚠️ Please describe your content', 'error');
                 return;
             }
 
-            this.innerHTML = '<span class="spinner-sm"></span> Analyzing against top creators...';
+            this.innerHTML = '<span class="spinner-sm"></span> AI analyzing...';
             this.disabled = true;
 
+            const trends = await updateExternalTrends();
+            const keywords = extractKeywords(input);
+            const matched = findMatchingCreators(keywords, 4);
+
             setTimeout(() => {
-                const keywords = extractKeywords(input);
-                const matched = findMatchingCreators(keywords, 6);
-                const allTop = allCreators.sort((a, b) => b.growth - a.growth).slice(0, 10);
+                const analysis = analyzeText(input, trends);
+                const score = generateViralScore(analysis);
 
-                // Calculate a score based on similarity to high-growth creators
-                let score = 50;
-                if (matched.length > 0) {
-                    const avgGrowth = matched.reduce((s, c) => s + c.growth, 0) / matched.length;
-                    const avgSentiment = matched.reduce((s, c) => s + c.sentiment, 0) / matched.length;
-                    // Growth contributes up to 30 points, sentiment up to 20
-                    const growthScore = Math.min(30, Math.max(0, (avgGrowth + 30) / 2));
-                    const sentimentScore = Math.min(20, (avgSentiment - 50) / 2);
-                    score = Math.min(95, Math.max(40, 50 + growthScore + sentimentScore));
-                } else {
-                    // Fallback: use global averages
-                    const avgGrowth = allTop.reduce((s, c) => s + c.growth, 0) / allTop.length;
-                    const avgSentiment = allTop.reduce((s, c) => s + c.sentiment, 0) / allTop.length;
-                    score = Math.min(85, Math.max(45, 50 + (avgGrowth / 2) + (avgSentiment - 60) / 2));
-                }
-
-                score = Math.round(score);
                 const level = score >= 80 ? '🌟 High Viral Potential' :
                     score >= 60 ? '📈 Moderate Potential' :
                     '📉 Needs Improvement';
 
-                const topMatch = matched.length > 0 ? matched[0] : null;
-                const categoryMatch = matched.length > 0 ? matched[0].category : 'general';
-
-                // Generate insights based on matched creators
                 let insights = [
                     `🎯 Viral Score: <span class="highlight">${score}%</span> — ${level}`,
-                    `📊 Based on ${matched.length} similar creators`,
+                    `📊 Content quality: <span class="highlight">${analysis.quality}</span> (${analysis.wordCount} words)`,
+                    `💬 Sentiment: ${analysis.sentiment} (${analysis.sentimentScore}%)`,
                 ];
 
-                if (topMatch) {
+                if (analysis.flagged.length > 0) {
+                    insights.push(`🚫 ⚠️ Flagged content detected: ${analysis.flagged.join(', ')} — revise immediately`);
+                }
+
+                if (analysis.topics.length > 0) {
+                    insights.push(`🏷️ Detected topics: ${analysis.topics.slice(0, 4).join(', ')}`);
+                }
+
+                if (analysis.trendMatch > 0) {
+                    insights.push(`🔥 Matches ${analysis.trendMatch} external trending topics — great alignment!`);
+                } else if (trends.length > 0) {
+                    insights.push(`📰 Consider incorporating: ${trends.slice(0, 3).join(', ')} — these are trending now.`);
+                }
+
+                if (matched.length > 0) {
+                    const top = matched[0];
                     insights.push(
-                        `🏆 Top match: ${topMatch.name} (${topMatch.volume} ${topMatch.category === 'youtube' ? 'subscribers' : 'followers'}) — ${topMatch.growth > 0 ? '+' : ''}${topMatch.growth}% growth`
-                        );
-                    insights.push(
-                        `💬 Engagement benchmark: ${topMatch.sentiment}% (${topMatch.sentiment >= 80 ? 'excellent' : topMatch.sentiment >= 60 ? 'good' : 'average'})`
+                        `🏆 Top match: ${top.name} (${top.volume} followers) — ${top.growth > 0 ? '+' : ''}${top.growth}% growth`
                         );
                 }
 
-                const bestTime = score >= 70 ? '7-9 PM EAT (peak engagement)' : '12-2 PM EAT (afternoon crowd)';
-                insights.push(`⏰ Recommended posting: ${bestTime}`);
+                const bestTime = score >= 70 ? '7-9 PM EAT (peak)' : '12-2 PM EAT (afternoon)';
+                insights.push(`⏰ Best posting time: ${bestTime}`);
 
                 if (score >= 70) {
-                    insights.push(`🚀 This content aligns well with Ethiopian trends — strong viral potential!`);
+                    insights.push(`🚀 Strong viral potential! Your content aligns well with Ethiopian trends.`);
+                } else if (score >= 50) {
+                    insights.push(`📈 Moderate potential. Try adding more engaging elements (emojis, questions, CTA).`);
                 } else {
-                    insights.push(`💡 Try incorporating: ${trendingTopics.slice(0, 3).join(', ')} for better alignment`);
+                    insights.push(`💡 Needs improvement. Consider reworking your content with a stronger hook.`);
                 }
 
-                viralityResults.innerHTML = insights.map((ins, i) =>
+                viralityResults.innerHTML = insights.map(ins =>
                     `<div class="result-item">${ins}</div>`
                 ).join('');
 
@@ -2940,11 +3199,11 @@
                 this.innerHTML = '<i class="fas fa-chart-line"></i> Predict Virality';
                 this.disabled = false;
                 showToast(`📊 Virality score: ${score}% — ${level}`, 'success');
-            }, 1800);
+            }, 1600);
         });
 
         // ================================================================
-        // TOOL 3: CONTENT OPTIMIZER — Data-Driven
+        // TOOL 3: CONTENT OPTIMIZER — Uses external trends
         // ================================================================
 
         const optimizeBtn = $('optimizeBtn');
@@ -2952,40 +3211,30 @@
         const optimizeOutput = $('optimizeOutput');
         const optimizeResults = $('optimizeResults');
 
-        // Pre-compute trending topics once
-        let trendingTopics = [];
-
-        function getTrendingTopicsCache() {
-            if (trendingTopics.length === 0) {
-                trendingTopics = getTrendingTopics();
-            }
-            return trendingTopics;
-        }
-
-        optimizeBtn.addEventListener('click', function() {
+        optimizeBtn.addEventListener('click', async function() {
             const input = optimizeInput.value.trim();
             if (!input) {
                 showToast('⚠️ Please paste your content or caption', 'error');
                 return;
             }
 
-            this.innerHTML = '<span class="spinner-sm"></span> Analyzing top performers...';
+            this.innerHTML = '<span class="spinner-sm"></span> AI optimizing...';
             this.disabled = true;
 
-            setTimeout(() => {
-                const keywords = extractKeywords(input);
-                const matched = findMatchingCreators(keywords, 4);
-                const trends = getTrendingTopicsCache();
-                const topByCat = {
-                    tiktok: getTopByCategory('tiktok'),
-                    instagram: getTopByCategory('instagram'),
-                    youtube: getTopByCategory('youtube')
-                };
+            const trends = await updateExternalTrends();
+            const keywords = extractKeywords(input);
+            const matched = findMatchingCreators(keywords, 3);
 
-                // Determine which category this content fits best
-                let bestCat = 'tiktok';
+            setTimeout(() => {
+                const analysis = analyzeText(input, trends);
+                const tips = generateIntelligentTips(analysis, input);
+
+                // Determine best platform
+                let bestCat = 'TikTok';
                 let catScore = 0;
-                for (const [cat, creators] of Object.entries(topByCat)) {
+                const cats = ['tiktok', 'instagram', 'youtube'];
+                for (const cat of cats) {
+                    const creators = getTopByCategory(cat);
                     let score = 0;
                     for (const c of creators) {
                         const text = (c.desc + ' ' + c.name).toLowerCase();
@@ -2995,59 +3244,42 @@
                     }
                     if (score > catScore) {
                         catScore = score;
-                        bestCat = cat;
+                        bestCat = cat.charAt(0).toUpperCase() + cat.slice(1);
                     }
                 }
 
-                const topCreators = topByCat[bestCat] || topByCat.tiktok;
-                const topRef = topCreators.length > 0 ? topCreators[0] : null;
-
-                // Build optimization tips
-                const tips = [
-                    `🎯 <span class="highlight">Hook:</span> Start with a strong opening in the first 2 seconds — ${topRef ? `like ${topRef.name}` : 'top creators'}`,
-                    `📱 <span class="highlight">Format:</span> Use vertical 9:16 aspect ratio for mobile (${bestCat} format)`,
-                    `🎵 <span class="highlight">Audio:</span> Add trending Ethiopian music or sounds — ${topRef ? `@${topRef.username || topRef.name} uses this` : 'use local beats'}`,
-                    `🏷️ <span class="highlight">Hashtags:</span> Use 3-5 relevant hashtags: #Ethiopia #AddisAbaba #EthioTrend ${trends.slice(0, 2).map(t => '#' + t).join(' ')}`,
-                    `💬 <span class="highlight">Call-to-action:</span> Ask viewers to comment or share — ${topRef ? `top creators like ${topRef.name} use this` : 'boosts engagement'}`
-                ];
-
-                // Add category-specific tips
-                if (bestCat === 'tiktok') {
-                    tips.push(`⏰ <span class="highlight">Timing:</span> Post between 7-9 PM EAT for TikTok's peak Ethiopian audience`);
-                    tips.push(`📊 <span class="highlight">Length:</span> 15-30 seconds — TikTok's algorithm favors shorter retention`);
-                } else if (bestCat === 'instagram') {
-                    tips.push(`⏰ <span class="highlight">Timing:</span> Post between 6-8 PM EAT for Instagram's peak engagement`);
-                    tips.push(`📊 <span class="highlight">Format:</span> Reels (15-30s) or carousel posts for higher reach`);
-                } else {
-                    tips.push(`⏰ <span class="highlight">Timing:</span> Post between 12-2 PM EAT or 7-9 PM EAT for YouTube`);
-                    tips.push(`📊 <span class="highlight">Length:</span> 5-10 minutes for YouTube's algorithm preference`);
+                // Add external trend optimization
+                let extraTip = '';
+                if (trends.length > 0 && analysis.trendMatch === 0) {
+                    extraTip =
+                        `🌐 Leverage trending topics: ${trends.slice(0, 3).join(', ')} — incorporate them to boost visibility.`;
+                } else if (trends.length > 0 && analysis.trendMatch > 0) {
+                    extraTip = `🔥 Great! Your content already matches ${analysis.trendMatch} trending topic(s).`;
                 }
 
-                // Add personalization from matched creators
-                if (matched.length > 0) {
-                    const bestMatch = matched[0];
-                    tips.push(
-                        `🌟 <span class="highlight">Inspiration:</span> Your content aligns with ${bestMatch.name} (${bestMatch.volume} followers) — consider their engagement style`
-                        );
+                let resultHtml = tips.map((tip, i) =>
+                    `<div class="result-item">${i+1}. ${tip.icon} ${tip.text}</div>`
+                ).join('');
+
+                if (extraTip) {
+                    resultHtml += `<div class="result-item">✨ ${extraTip}</div>`;
                 }
 
-                // Shuffle and pick 6
-                const shuffled = shuffleArray([...tips]);
-                const selected = shuffled.slice(0, 6);
+                resultHtml += `
+                    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--text-tertiary);">
+                        📊 Optimized for <span class="highlight">${bestCat}</span> platform
+                        ${matched.length > 0 ? ` • Top match: ${matched[0].name}` : ''}
+                        ${analysis.flagged.length > 0 ? ' ⚠️ Contains flagged content — revise!' : ''}
+                        ${trends.length > 0 ? ' 🌐 External trends integrated' : ''}
+                    </div>
+                `;
 
-                optimizeResults.innerHTML = selected.map((tip, i) =>
-                    `<div class="result-item">${i+1}. ${tip}</div>`
-                ).join('') +
-                `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--text-tertiary);">
-                    📊 Optimized for <span class="highlight">${bestCat}</span> platform • ${matched.length > 0 ? `Matched with ${matched.length} creators` : 'Based on top Ethiopian trends'}
-                    ${topRef ? ` • Top reference: ${topRef.name}` : ''}
-                </div>`;
-
+                optimizeResults.innerHTML = resultHtml;
                 optimizeOutput.classList.add('show');
                 this.innerHTML = '<i class="fas fa-rocket"></i> Optimize Content';
                 this.disabled = false;
-                showToast(`🚀 Content optimized for ${bestCat} platform`, 'success');
-            }, 1600);
+                showToast(`🚀 Content optimized for ${bestCat} with external trends`, 'success');
+            }, 1400);
         });
 
         // ================================================================
@@ -3137,7 +3369,7 @@
         // INIT
         // ================================================================
 
-        function initApp() {
+        async function initApp() {
             initTheme();
             renderFilters();
             renderStats();
@@ -3146,11 +3378,37 @@
             renderFeed();
             updateStatsUI();
 
-            // Pre-cache trending topics for AI tools
-            getTrendingTopicsCache();
+            // Fetch external trends on startup
+            await updateExternalTrends();
+            // Update every 5 minutes
+            setInterval(updateExternalTrends, 5 * 60 * 1000);
 
             setInterval(renderFeed, 60000);
-            showToast('🔥 Welcome to EthioTrend AI!', 'success');
+            showToast('🔥 Welcome to EthioTrend AI — Powered by external trends', 'success');
+        }
+
+        // Helper functions for AI tools
+        function extractKeywords(text) {
+            const words = text.toLowerCase().split(/\s+/);
+            const stopWords = ['the', 'a', 'an', 'of', 'for', 'on', 'at', 'to', 'in', 'with', 'by', 'from', 'up', 'about',
+                'into', 'through', 'during', 'without', 'after', 'before', 'under', 'over', 'between'
+            ];
+            return words.filter(w => w.length > 2 && !stopWords.includes(w));
+        }
+
+        function findMatchingCreators(keywords, limit = 5) {
+            const scores = allCreators.map(c => {
+                const text = (c.name + ' ' + c.desc + ' ' + (c.username || '') + ' ' + c.category).toLowerCase();
+                let score = 0;
+                for (const kw of keywords) {
+                    if (text.includes(kw)) score += 2;
+                    if (c.name.toLowerCase().includes(kw)) score += 3;
+                    if (c.category && c.category.includes(kw)) score += 1;
+                }
+                return { ...c, matchScore: score };
+            });
+            scores.sort((a, b) => b.matchScore - a.matchScore);
+            return scores.filter(c => c.matchScore > 0).slice(0, limit);
         }
 
         initApp();
@@ -3186,7 +3444,7 @@
             }
         }, 28000);
 
-        console.log('✅ EthioTrend AI initialized with data-driven AI tools');
+        console.log('✅ EthioTrend AI initialized with external trends integration');
     </script>
 
 </body>

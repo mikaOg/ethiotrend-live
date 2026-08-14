@@ -583,6 +583,31 @@
                 <div class="stat-card"><div class="stat-label">🌟 Viral</div><div class="stat-value" style="color:var(--accent-green);" id="statViral">0</div></div>
                 <div class="stat-card"><div class="stat-label">🔓 Free</div><div class="stat-value" style="color:var(--accent-purple);" id="statFreeRemaining">1</div></div>
             </div>
+            <!-- Payment Modal -->
+            <div id="paymentModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+                <div style="background:var(--surface); border-radius:var(--radius-xl); padding:30px; max-width:500px; width:90%; border:1px solid var(--border); position:relative; max-height:90vh; overflow-y:auto;">
+                    <button onclick="document.getElementById('paymentModal').style.display='none'" style="position:absolute; top:12px; right:16px; background:transparent; border:none; color:var(--text-tertiary); font-size:22px; cursor:pointer;">&times;</button>
+                    <h2 style="font-size:22px; margin-bottom:20px;">💳 Choose Payment Method</h2>
+                    
+                    <button id="payTelebirrBtn" style="width:100%; padding:16px; margin-bottom:12px; background:linear-gradient(135deg,#1a73e8,#0d47a1); color:white; border:none; border-radius:var(--radius-md); font-size:16px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;">
+                        <i class="fas fa-mobile-alt"></i> Pay with Telebirr (150 ETB)
+                    </button>
+
+                    <button id="payCBEBtn" style="width:100%; padding:16px; margin-bottom:8px; background:linear-gradient(135deg,#f5a623,#e67e22); color:white; border:none; border-radius:var(--radius-md); font-size:16px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;">
+                        <i class="fas fa-university"></i> Pay with CBE (150 ETB)
+                    </button>
+
+                    <div id="cbeForm" style="display:none; margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
+                        <p style="font-size:14px; color:var(--text-secondary); margin-bottom:12px;">Transfer 150 ETB to CBE account <strong>1000XXXXXX</strong> and upload the screenshot below.</p>
+                        <input type="text" id="cbeTransferRef" placeholder="Transfer Reference (e.g., ET-CBE-12345)" style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-primary); margin-bottom:12px;" />
+                        <input type="file" id="cbeScreenshot" accept="image/*" style="margin-bottom:12px; display:block; color:var(--text-secondary);" />
+                        <button id="submitCBE" class="btn-primary" style="width:100%;">Submit Screenshot</button>
+                        <div id="cbeStatus" style="margin-top:12px; font-size:14px;"></div>
+                    </div>
+
+                    <div id="paymentStatusMsg" style="margin-top:12px; font-size:14px; color:var(--text-secondary);"></div>
+                </div>
+            </div>
             <button class="btn-gold" id="subscribeBtn">
                 <i class="fas fa-crown"></i> Upgrade to Premium – 150 ETB/month
             </button>
@@ -594,11 +619,10 @@
 
     </div>
 
-    <script>
+        <script>
         // ================================================================
         // MOVIE DATA
         // ================================================================
-
         const movies2025 = [
             { title: "የፍቅር ኪዳን", titleEn: "Yefikir Kidan", year: "2026", genre: "Drama", desc: "A powerful Ethiopian drama exploring the depths of love, commitment, and the sacrifices made to protect what matters most.", videoId: "W6cCOiRcZHE", watchUrl: "https://youtu.be/W6cCOiRcZHE", isPlaylist: false },
             { title: "ዳናሽ", titleEn: "Danash", year: "2026", genre: "Drama", desc: "An emotional journey of a young woman navigating life's challenges, love, and self-discovery in modern Ethiopia.", videoId: "Tyl5PGNU4Sc", watchUrl: "https://www.youtube.com/watch?v=Tyl5PGNU4Sc", isPlaylist: false },
@@ -613,375 +637,75 @@
         ];
 
         // ================================================================
-        // CREATOR DATA
+        // CREATOR DATA – FULL ARRAYS
         // ================================================================
-
         const tiktokCreators = [
-            { id: 1, name: "Freedom", username: "@freedom", category: "tiktok", growth: -9.1, sentiment: 92,
-                volume: "10.3M", data: [12, 18, 25, 32, 45, 58, 78, 95, 120, 156, 198, 245, 298, 342],
-                desc: "The most-followed Ethiopian TikTok creator with 10.3M followers.",
-                recentPost: "🎬 '10M followers! Thank you Ethiopia! 🇪🇹' — 3.2M views • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/freedom/400/225", videoUrl: "https://www.tiktok.com/@freedom",
-                awards: "🏆 Top Creator 2025", verified: true },
-            { id: 2, name: "Adonaymada", username: "@adonaymada", category: "tiktok", growth: 18.6, sentiment: 94,
-                volume: "6.0M", data: [12, 18, 25, 32, 45, 58, 78, 95, 120, 156, 198, 245, 298, 342],
-                desc: "Adonay Berhane — 'King of TikTok' in Ethiopia.",
-                recentPost: "🎬 'Thank you for 6M followers! 🇪🇹' — 2.4M views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/adonay/400/225", videoUrl: "https://www.tiktok.com/@adonaymada",
-                awards: "🏆 TikToker of the Year 2025", verified: true },
-            { id: 3, name: "Master Abinet Kebede", username: "@masterabinet", category: "tiktok", growth: 18.1,
-                sentiment: 89, volume: "6.0M", data: [30, 45, 62, 85, 110, 140, 175, 210, 245, 267],
-                desc: "One of Ethiopia's most followed TikTok creators.",
-                recentPost: "🎬 'New challenge with the crew! 🔥' — 1.8M views • 5 days ago",
-                thumbnail: "https://picsum.photos/seed/abinet/400/225", videoUrl: "https://www.tiktok.com/@masterabinet",
-                awards: "🏆 Special Recognition 2025", verified: true },
-            { id: 4, name: "SAMI (ፓፓ) ✝️", username: "@sami_papa", category: "tiktok", growth: 22.4, sentiment: 87,
-                volume: "3.8M", data: [20, 28, 38, 50, 65, 80, 98, 112, 130, 145, 156],
-                desc: "Popular Ethiopian content creator with strong engagement.",
-                recentPost: "🎬 'Stay blessed, Ethiopia! 🙏' — 890K views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/sami/400/225", videoUrl: "https://www.tiktok.com/@sami_papa",
-                awards: "🌟 Rising Star 2025", verified: false },
-            { id: 5, name: "Jon Daniel", username: "@jon_daniel", category: "tiktok", growth: 68.3, sentiment: 72,
-                volume: "3.5M", data: [45, 52, 58, 65, 72, 85, 98, 112, 130, 145, 162, 178, 189],
-                desc: "Popular Ethiopian TikToker with 3.5 million followers.",
-                recentPost: "🎵 'Aychlem — New Ethiopian Music 🎤' — 1.2M views • 1 week ago",
-                thumbnail: "https://picsum.photos/seed/jondaniel/400/225", videoUrl: "https://www.tiktok.com/@jon_daniel",
-                awards: "🎵 Ethiopian Music Artist", verified: true },
-            { id: 6, name: "አዊ ጄራ ቤር ዜንጋ", username: "@awi_jera", category: "tiktok", growth: 10.0, sentiment: 83,
-                volume: "3.2M", data: [18, 22, 30, 40, 55, 68, 82, 98, 115, 130, 145],
-                desc: "Rising Ethiopian TikTok star.",
-                recentPost: "🎬 'Another day, another vibe ✨' — 620K views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/awijera/400/225", videoUrl: "https://www.tiktok.com/@awi_jera",
-                awards: "🌟 Rising Star", verified: false },
-            { id: 7, name: "Yuti Nass", username: "@yuti_nass", category: "tiktok", growth: 20.3, sentiment: 91,
-                volume: "3.0M", data: [15, 18, 22, 28, 35, 42, 55, 68, 82, 95, 108, 118, 128],
-                desc: "Major Ethiopian TikTok creator, Lifetime Achievement Award.",
-                recentPost: "🎬 'Grateful for all the love ❤️' — 1.5M views • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/yutinass/400/225", videoUrl: "https://www.tiktok.com/@yuti_nass",
-                awards: "🏆 Lifetime Achievement Award", verified: true },
-            { id: 8, name: "Tonkosu", username: "@tonkosu", category: "tiktok", growth: 10.9, sentiment: 85,
-                volume: "3.0M", data: [20, 25, 30, 38, 48, 62, 75, 88, 102, 118, 135, 148, 156],
-                desc: "Rising Ethiopian TikTok star with 3 million followers.",
-                recentPost: "🎬 'Another day, another vibe ✨' — 890K views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/tonkosu/400/225", videoUrl: "https://www.tiktok.com/@tonkosu",
-                awards: "🌟 Rising Star", verified: false },
-            { id: 9, name: "Eshetu Melese", username: "@eshetumelese", category: "tiktok", growth: -1.6, sentiment: 78,
-                volume: "2.9M", data: [25, 28, 32, 38, 45, 52, 58, 65, 72, 78, 76],
-                desc: "Ethiopian TikTok creator with 2.9M followers.",
-                recentPost: "🎬 'Stay blessed, Ethiopia! 🙏' — 650K views • 6 days ago",
-                thumbnail: "https://picsum.photos/seed/eshetu/400/225", videoUrl: "https://www.tiktok.com/@eshetumelese",
-                awards: "🌟 Top Creator 2024", verified: false },
-            { id: 10, name: "Dr. Abiy Tadesse", username: "@drabiy", category: "tiktok", growth: 14.9, sentiment: 96,
-                volume: "2.8M", data: [30, 35, 40, 48, 55, 62, 70, 78, 85, 90, 95, 98],
-                desc: "ENT surgeon with 2.8M followers. Health education.",
-                recentPost: "🩺 'Health tips for Ethiopians' — 1.1M views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/drabiy/400/225", videoUrl: "https://www.tiktok.com/@drabiy",
-                awards: "🏆 Medical Content Award", verified: true },
-            { id: 11, name: "Mensur Jemal", username: "@mensurjemal", category: "tiktok", growth: -4.3, sentiment: 82,
-                volume: "2.7M", data: [25, 28, 32, 38, 45, 52, 58, 65, 72, 78, 76],
-                desc: "Motivational content creator.",
-                recentPost: "🎬 'Stay motivated, Ethiopia! 💪' — 720K views • 5 days ago",
-                thumbnail: "https://picsum.photos/seed/mensur/400/225", videoUrl: "https://www.tiktok.com/@mensurjemal",
-                awards: "🌟 Motivational Creator", verified: false },
-            { id: 12, name: "ታኩር (Takur)", username: "@takur", category: "tiktok", growth: 43.7, sentiment: 88,
-                volume: "2.6M", data: [22, 30, 42, 55, 68, 85, 102, 120, 142, 160, 178],
-                desc: "Popular comedy creator.",
-                recentPost: "😂 'New comedy skit!' — 980K views • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/takur/400/225", videoUrl: "https://www.tiktok.com/@takur",
-                awards: "🌟 Comedy Star 2025", verified: false },
-            { id: 13, name: "Mr Abeni", username: "@mrabeni", category: "tiktok", growth: 15.2, sentiment: 82,
-                volume: "2.6M", data: [18, 22, 30, 40, 55, 68, 82, 98, 115, 130, 145],
-                desc: "Ethiopian TikTok creator.",
-                recentPost: "🎬 'Always grinding 💪' — 720K views • 5 days ago",
-                thumbnail: "https://picsum.photos/seed/mrabeni/400/225", videoUrl: "https://www.tiktok.com/@mrabeni",
-                awards: "🌟 Top Creator 2025", verified: false },
-            { id: 14, name: "oslo yitbe", username: "@oslo_yitbe", category: "tiktok", growth: 48.1, sentiment: 86,
-                volume: "2.6M", data: [20, 28, 38, 50, 65, 80, 98, 112, 130, 145, 156],
-                desc: "Fast-growing Ethiopian TikToker.",
-                recentPost: "🎬 'New video! 🔥' — 820K views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/oslo/400/225", videoUrl: "https://www.tiktok.com/@oslo_yitbe",
-                awards: "🌟 Fastest Growing 2025", verified: false },
-            { id: 15, name: "Kiya dimple", username: "@kiyadimple", category: "tiktok", growth: 0, sentiment: 84,
-                volume: "2.5M", data: [25, 28, 32, 38, 45, 52, 58, 65, 72, 78, 76],
-                desc: "Lifestyle creator.",
-                recentPost: "🎬 'Lifestyle vibes ✨' — 560K views • 6 days ago",
-                thumbnail: "https://picsum.photos/seed/kiya/400/225", videoUrl: "https://www.tiktok.com/@kiyadimple",
-                awards: "🌟 Lifestyle Creator", verified: false },
-            { id: 16, name: "Amen", username: "@amen", category: "tiktok", growth: -2.9, sentiment: 81, volume: "2.5M",
-                data: [22, 30, 42, 55, 68, 85, 102, 120, 142, 160, 178], desc: "Fashion and lifestyle.",
-                recentPost: "👗 'Ethiopian fashion is unmatched!' — 480K views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/amen/400/225", videoUrl: "https://www.tiktok.com/@amen",
-                awards: "🌟 Fashion Icon", verified: false },
-            { id: 17, name: "Brook News", username: "@brooknews", category: "tiktok", growth: 2.8, sentiment: 93,
-                volume: "2.5M", data: [25, 32, 40, 48, 58, 68, 78, 88, 98, 108, 115],
-                desc: "Brook Chala — informative creator.",
-                recentPost: "📰 'Ethiopia news update' — 1.3M views • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/brooknews/400/225", videoUrl: "https://www.tiktok.com/@brooknews",
-                awards: "🏆 Informative Creator 2025", verified: true },
-            { id: 18, name: "Yebichu", username: "@yebichu", category: "tiktok", growth: 5.2, sentiment: 80,
-                volume: "2.4M", data: [18, 22, 30, 40, 55, 68, 82, 98, 115, 130, 145],
-                desc: "Popular Ethiopian TikToker.",
-                recentPost: "🎬 'New video!' — 650K views • 5 days ago",
-                thumbnail: "https://picsum.photos/seed/yebichu/400/225", videoUrl: "https://www.tiktok.com/@yebichu",
-                awards: "🌟 Top Creator", verified: false },
-            { id: 19, name: "Queen heran", username: "@queenheran", category: "tiktok", growth: 7.4, sentiment: 83,
-                volume: "2.4M", data: [20, 28, 38, 50, 65, 80, 98, 112, 130, 145, 156],
-                desc: "Female TikTok creator.",
-                recentPost: "🎬 'Queen vibes 👑' — 580K views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/queenheran/400/225", videoUrl: "https://www.tiktok.com/@queenheran",
-                awards: "🌟 Female Creator", verified: false },
-            { id: 20, name: "Rache Tesfaye", username: "@rachetesfaye", category: "tiktok", growth: 0.68, sentiment: 82,
-                volume: "2.4M", data: [22, 30, 42, 55, 68, 85, 102, 120, 142, 160, 178],
-                desc: "Ethiopian lifestyle creator.",
-                recentPost: "🎬 'Lifestyle content ✨' — 520K views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/rache/400/225", videoUrl: "https://www.tiktok.com/@rachetesfaye",
-                awards: "🌟 Lifestyle Creator", verified: false },
-            { id: 21, name: "ShamarAbeni", username: "@shamarabeni", category: "tiktok", growth: -5.7, sentiment: 79,
-                volume: "2.3M", data: [18, 22, 30, 40, 55, 68, 82, 98, 115, 130, 145],
-                desc: "Popular TikTok creator.",
-                recentPost: "🎬 'New video!' — 480K views • 6 days ago",
-                thumbnail: "https://picsum.photos/seed/shamar/400/225", videoUrl: "https://www.tiktok.com/@shamarabeni",
-                awards: "🌟 Top Creator", verified: false },
-            { id: 22, name: "comedian yasino", username: "@comedianyasino", category: "tiktok", growth: 3.6,
-                sentiment: 86, volume: "2.3M", data: [20, 28, 38, 50, 65, 80, 98, 112, 130, 145, 156],
-                desc: "Comedy content creator.",
-                recentPost: "😂 'Comedy skit!' — 620K views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/yasino/400/225", videoUrl: "https://www.tiktok.com/@comedianyasino",
-                awards: "🌟 Comedy Star", verified: false },
-            { id: 23, name: "Abdi Live Official", username: "@abdilive", category: "tiktok", growth: 8.5, sentiment: 85,
-                volume: "2.2M", data: [22, 30, 42, 55, 68, 85, 102, 120, 142, 160, 178],
-                desc: "Live streaming creator.",
-                recentPost: "🔴 'Live now!' — 1.2M views • 1 day ago",
-                thumbnail: "https://picsum.photos/seed/abdi/400/225", videoUrl: "https://www.tiktok.com/@abdilive",
-                awards: "🌟 Live Streamer", verified: false },
-            { id: 24, name: "በርጠሚዮስ", username: "@bergemios", category: "tiktok", growth: 35.3, sentiment: 84,
-                volume: "2.2M", data: [18, 22, 30, 40, 55, 68, 82, 98, 115, 130, 145],
-                desc: "Fast-growing Ethiopian TikToker.",
-                recentPost: "🎬 'New content!' — 720K views • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/bergemios/400/225", videoUrl: "https://www.tiktok.com/@bergemios",
-                awards: "🌟 Fast Growing", verified: false },
-            { id: 25, name: "Janiy", username: "@janiylive", category: "tiktok", growth: 22.4, sentiment: 88,
-                volume: "2.2M", data: [22, 30, 42, 55, 68, 85, 102, 120, 142, 160, 178],
-                desc: "Top female creator.",
-                recentPost: "🎬 'Moving forward with love ❤️' — 980K views • 1 day ago",
-                thumbnail: "https://picsum.photos/seed/janiy/400/225", videoUrl: "https://www.tiktok.com/@janiylive",
-                awards: "🌟 Top Female Creator", verified: true },
-            { id: 26, name: "Kea Kibrom", username: "@keakibrom", category: "tiktok", growth: 2.0, sentiment: 90,
-                volume: "449.6K", data: [10, 15, 20, 28, 35, 42, 55, 68, 82, 95, 108],
-                desc: "Female influencer.",
-                recentPost: "🎬 'Lifestyle content ✨' — 320K views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/kea/400/225", videoUrl: "https://www.tiktok.com/@keakibrom",
-                awards: "🌟 Rising Female Creator", verified: false },
-            { id: 27, name: "Segen Yifter", username: "@segenyifter", category: "tiktok", growth: 1.5, sentiment: 88,
-                volume: "339K", data: [8, 12, 18, 25, 32, 40, 50, 62, 75, 88],
-                desc: "Female influencer.",
-                recentPost: "🎬 'Lifestyle content ✨' — 280K views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/segen/400/225", videoUrl: "https://www.tiktok.com/@segenyifter",
-                awards: "🌟 Female Creator", verified: false },
-            { id: 28, name: "Yoadan", username: "@yoadan", category: "tiktok", growth: 1.8, sentiment: 87,
-                volume: "351.7K", data: [8, 12, 18, 25, 32, 40, 50, 62, 75, 88],
-                desc: "Female TikTok creator.",
-                recentPost: "🎬 'Lifestyle content ✨' — 290K views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/yoadan/400/225", videoUrl: "https://www.tiktok.com/@yoadan",
-                awards: "🌟 Female Creator", verified: false },
-            { id: 29, name: "Birkti Shimeles", username: "@birkitishimeles", category: "tiktok", growth: 1.2,
-                sentiment: 86, volume: "281.4K", data: [5, 8, 12, 18, 25, 32, 40, 50, 62, 75],
-                desc: "Female influencer.",
-                recentPost: "🎬 'Lifestyle content ✨' — 250K views • 5 days ago",
-                thumbnail: "https://picsum.photos/seed/birkti/400/225", videoUrl: "https://www.tiktok.com/@birkitishimeles",
-                awards: "🌟 Female Creator", verified: false },
-            { id: 30, name: "Mekita_ta_ta", username: "@mekita_ta_ta", category: "tiktok", growth: 2.5, sentiment: 85,
-                volume: "422.5K", data: [8, 12, 18, 25, 32, 40, 50, 62, 75, 88],
-                desc: "Female TikTok creator.",
-                recentPost: "🎬 'New video!' — 350K views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/mekita/400/225", videoUrl: "https://www.tiktok.com/@mekita_ta_ta",
-                awards: "🌟 Female Creator", verified: false }
+            { id:1, name:"Freedom", username:"@freedom", category:"tiktok", growth:-9.1, sentiment:92, volume:"10.3M", data:[12,18,25,32,45,58,78,95,120,156,198,245,298,342], desc:"The most-followed Ethiopian TikTok creator with 10.3M followers.", recentPost:"🎬 '10M followers! Thank you Ethiopia! 🇪🇹' — 3.2M views • 2 days ago", thumbnail:"https://picsum.photos/seed/freedom/400/225", videoUrl:"https://www.tiktok.com/@freedom", awards:"🏆 Top Creator 2025", verified:true },
+            { id:2, name:"Adonaymada", username:"@adonaymada", category:"tiktok", growth:18.6, sentiment:94, volume:"6.0M", data:[12,18,25,32,45,58,78,95,120,156,198,245,298,342], desc:"Adonay Berhane — 'King of TikTok' in Ethiopia.", recentPost:"🎬 'Thank you for 6M followers! 🇪🇹' — 2.4M views • 3 days ago", thumbnail:"https://picsum.photos/seed/adonay/400/225", videoUrl:"https://www.tiktok.com/@adonaymada", awards:"🏆 TikToker of the Year 2025", verified:true },
+            { id:3, name:"Master Abinet Kebede", username:"@masterabinet", category:"tiktok", growth:18.1, sentiment:89, volume:"6.0M", data:[30,45,62,85,110,140,175,210,245,267], desc:"One of Ethiopia's most followed TikTok creators.", recentPost:"🎬 'New challenge with the crew! 🔥' — 1.8M views • 5 days ago", thumbnail:"https://picsum.photos/seed/abinet/400/225", videoUrl:"https://www.tiktok.com/@masterabinet", awards:"🏆 Special Recognition 2025", verified:true },
+            { id:4, name:"SAMI (ፓፓ) ✝️", username:"@sami_papa", category:"tiktok", growth:22.4, sentiment:87, volume:"3.8M", data:[20,28,38,50,65,80,98,112,130,145,156], desc:"Popular Ethiopian content creator with strong engagement.", recentPost:"🎬 'Stay blessed, Ethiopia! 🙏' — 890K views • 4 days ago", thumbnail:"https://picsum.photos/seed/sami/400/225", videoUrl:"https://www.tiktok.com/@sami_papa", awards:"🌟 Rising Star 2025", verified:false },
+            { id:5, name:"Jon Daniel", username:"@jon_daniel", category:"tiktok", growth:68.3, sentiment:72, volume:"3.5M", data:[45,52,58,65,72,85,98,112,130,145,162,178,189], desc:"Popular Ethiopian TikToker with 3.5 million followers.", recentPost:"🎵 'Aychlem — New Ethiopian Music 🎤' — 1.2M views • 1 week ago", thumbnail:"https://picsum.photos/seed/jondaniel/400/225", videoUrl:"https://www.tiktok.com/@jon_daniel", awards:"🎵 Ethiopian Music Artist", verified:true },
+            { id:6, name:"አዊ ጄራ ቤር ዜንጋ", username:"@awi_jera", category:"tiktok", growth:10.0, sentiment:83, volume:"3.2M", data:[18,22,30,40,55,68,82,98,115,130,145], desc:"Rising Ethiopian TikTok star.", recentPost:"🎬 'Another day, another vibe ✨' — 620K views • 4 days ago", thumbnail:"https://picsum.photos/seed/awijera/400/225", videoUrl:"https://www.tiktok.com/@awi_jera", awards:"🌟 Rising Star", verified:false },
+            { id:7, name:"Yuti Nass", username:"@yuti_nass", category:"tiktok", growth:20.3, sentiment:91, volume:"3.0M", data:[15,18,22,28,35,42,55,68,82,95,108,118,128], desc:"Major Ethiopian TikTok creator, Lifetime Achievement Award.", recentPost:"🎬 'Grateful for all the love ❤️' — 1.5M views • 2 days ago", thumbnail:"https://picsum.photos/seed/yutinass/400/225", videoUrl:"https://www.tiktok.com/@yuti_nass", awards:"🏆 Lifetime Achievement Award", verified:true },
+            { id:8, name:"Tonkosu", username:"@tonkosu", category:"tiktok", growth:10.9, sentiment:85, volume:"3.0M", data:[20,25,30,38,48,62,75,88,102,118,135,148,156], desc:"Rising Ethiopian TikTok star with 3 million followers.", recentPost:"🎬 'Another day, another vibe ✨' — 890K views • 4 days ago", thumbnail:"https://picsum.photos/seed/tonkosu/400/225", videoUrl:"https://www.tiktok.com/@tonkosu", awards:"🌟 Rising Star", verified:false },
+            { id:9, name:"Eshetu Melese", username:"@eshetumelese", category:"tiktok", growth:-1.6, sentiment:78, volume:"2.9M", data:[25,28,32,38,45,52,58,65,72,78,76], desc:"Ethiopian TikTok creator with 2.9M followers.", recentPost:"🎬 'Stay blessed, Ethiopia! 🙏' — 650K views • 6 days ago", thumbnail:"https://picsum.photos/seed/eshetu/400/225", videoUrl:"https://www.tiktok.com/@eshetumelese", awards:"🌟 Top Creator 2024", verified:false },
+            { id:10, name:"Dr. Abiy Tadesse", username:"@drabiy", category:"tiktok", growth:14.9, sentiment:96, volume:"2.8M", data:[30,35,40,48,55,62,70,78,85,90,95,98], desc:"ENT surgeon with 2.8M followers. Health education.", recentPost:"🩺 'Health tips for Ethiopians' — 1.1M views • 3 days ago", thumbnail:"https://picsum.photos/seed/drabiy/400/225", videoUrl:"https://www.tiktok.com/@drabiy", awards:"🏆 Medical Content Award", verified:true },
+            { id:11, name:"Mensur Jemal", username:"@mensurjemal", category:"tiktok", growth:-4.3, sentiment:82, volume:"2.7M", data:[25,28,32,38,45,52,58,65,72,78,76], desc:"Motivational content creator.", recentPost:"🎬 'Stay motivated, Ethiopia! 💪' — 720K views • 5 days ago", thumbnail:"https://picsum.photos/seed/mensur/400/225", videoUrl:"https://www.tiktok.com/@mensurjemal", awards:"🌟 Motivational Creator", verified:false },
+            { id:12, name:"ታኩር (Takur)", username:"@takur", category:"tiktok", growth:43.7, sentiment:88, volume:"2.6M", data:[22,30,42,55,68,85,102,120,142,160,178], desc:"Popular comedy creator.", recentPost:"😂 'New comedy skit!' — 980K views • 2 days ago", thumbnail:"https://picsum.photos/seed/takur/400/225", videoUrl:"https://www.tiktok.com/@takur", awards:"🌟 Comedy Star 2025", verified:false },
+            { id:13, name:"Mr Abeni", username:"@mrabeni", category:"tiktok", growth:15.2, sentiment:82, volume:"2.6M", data:[18,22,30,40,55,68,82,98,115,130,145], desc:"Ethiopian TikTok creator.", recentPost:"🎬 'Always grinding 💪' — 720K views • 5 days ago", thumbnail:"https://picsum.photos/seed/mrabeni/400/225", videoUrl:"https://www.tiktok.com/@mrabeni", awards:"🌟 Top Creator 2025", verified:false },
+            { id:14, name:"oslo yitbe", username:"@oslo_yitbe", category:"tiktok", growth:48.1, sentiment:86, volume:"2.6M", data:[20,28,38,50,65,80,98,112,130,145,156], desc:"Fast-growing Ethiopian TikToker.", recentPost:"🎬 'New video! 🔥' — 820K views • 3 days ago", thumbnail:"https://picsum.photos/seed/oslo/400/225", videoUrl:"https://www.tiktok.com/@oslo_yitbe", awards:"🌟 Fastest Growing 2025", verified:false },
+            { id:15, name:"Kiya dimple", username:"@kiyadimple", category:"tiktok", growth:0, sentiment:84, volume:"2.5M", data:[25,28,32,38,45,52,58,65,72,78,76], desc:"Lifestyle creator.", recentPost:"🎬 'Lifestyle vibes ✨' — 560K views • 6 days ago", thumbnail:"https://picsum.photos/seed/kiya/400/225", videoUrl:"https://www.tiktok.com/@kiyadimple", awards:"🌟 Lifestyle Creator", verified:false },
+            { id:16, name:"Amen", username:"@amen", category:"tiktok", growth:-2.9, sentiment:81, volume:"2.5M", data:[22,30,42,55,68,85,102,120,142,160,178], desc:"Fashion and lifestyle.", recentPost:"👗 'Ethiopian fashion is unmatched!' — 480K views • 4 days ago", thumbnail:"https://picsum.photos/seed/amen/400/225", videoUrl:"https://www.tiktok.com/@amen", awards:"🌟 Fashion Icon", verified:false },
+            { id:17, name:"Brook News", username:"@brooknews", category:"tiktok", growth:2.8, sentiment:93, volume:"2.5M", data:[25,32,40,48,58,68,78,88,98,108,115], desc:"Brook Chala — informative creator.", recentPost:"📰 'Ethiopia news update' — 1.3M views • 2 days ago", thumbnail:"https://picsum.photos/seed/brooknews/400/225", videoUrl:"https://www.tiktok.com/@brooknews", awards:"🏆 Informative Creator 2025", verified:true },
+            { id:18, name:"Yebichu", username:"@yebichu", category:"tiktok", growth:5.2, sentiment:80, volume:"2.4M", data:[18,22,30,40,55,68,82,98,115,130,145], desc:"Popular Ethiopian TikToker.", recentPost:"🎬 'New video!' — 650K views • 5 days ago", thumbnail:"https://picsum.photos/seed/yebichu/400/225", videoUrl:"https://www.tiktok.com/@yebichu", awards:"🌟 Top Creator", verified:false },
+            { id:19, name:"Queen heran", username:"@queenheran", category:"tiktok", growth:7.4, sentiment:83, volume:"2.4M", data:[20,28,38,50,65,80,98,112,130,145,156], desc:"Female TikTok creator.", recentPost:"🎬 'Queen vibes 👑' — 580K views • 3 days ago", thumbnail:"https://picsum.photos/seed/queenheran/400/225", videoUrl:"https://www.tiktok.com/@queenheran", awards:"🌟 Female Creator", verified:false },
+            { id:20, name:"Rache Tesfaye", username:"@rachetesfaye", category:"tiktok", growth:0.68, sentiment:82, volume:"2.4M", data:[22,30,42,55,68,85,102,120,142,160,178], desc:"Ethiopian lifestyle creator.", recentPost:"🎬 'Lifestyle content ✨' — 520K views • 4 days ago", thumbnail:"https://picsum.photos/seed/rache/400/225", videoUrl:"https://www.tiktok.com/@rachetesfaye", awards:"🌟 Lifestyle Creator", verified:false },
+            { id:21, name:"ShamarAbeni", username:"@shamarabeni", category:"tiktok", growth:-5.7, sentiment:79, volume:"2.3M", data:[18,22,30,40,55,68,82,98,115,130,145], desc:"Popular TikTok creator.", recentPost:"🎬 'New video!' — 480K views • 6 days ago", thumbnail:"https://picsum.photos/seed/shamar/400/225", videoUrl:"https://www.tiktok.com/@shamarabeni", awards:"🌟 Top Creator", verified:false },
+            { id:22, name:"comedian yasino", username:"@comedianyasino", category:"tiktok", growth:3.6, sentiment:86, volume:"2.3M", data:[20,28,38,50,65,80,98,112,130,145,156], desc:"Comedy content creator.", recentPost:"😂 'Comedy skit!' — 620K views • 3 days ago", thumbnail:"https://picsum.photos/seed/yasino/400/225", videoUrl:"https://www.tiktok.com/@comedianyasino", awards:"🌟 Comedy Star", verified:false },
+            { id:23, name:"Abdi Live Official", username:"@abdilive", category:"tiktok", growth:8.5, sentiment:85, volume:"2.2M", data:[22,30,42,55,68,85,102,120,142,160,178], desc:"Live streaming creator.", recentPost:"🔴 'Live now!' — 1.2M views • 1 day ago", thumbnail:"https://picsum.photos/seed/abdi/400/225", videoUrl:"https://www.tiktok.com/@abdilive", awards:"🌟 Live Streamer", verified:false },
+            { id:24, name:"በርጠሚዮስ", username:"@bergemios", category:"tiktok", growth:35.3, sentiment:84, volume:"2.2M", data:[18,22,30,40,55,68,82,98,115,130,145], desc:"Fast-growing Ethiopian TikToker.", recentPost:"🎬 'New content!' — 720K views • 2 days ago", thumbnail:"https://picsum.photos/seed/bergemios/400/225", videoUrl:"https://www.tiktok.com/@bergemios", awards:"🌟 Fast Growing", verified:false },
+            { id:25, name:"Janiy", username:"@janiylive", category:"tiktok", growth:22.4, sentiment:88, volume:"2.2M", data:[22,30,42,55,68,85,102,120,142,160,178], desc:"Top female creator.", recentPost:"🎬 'Moving forward with love ❤️' — 980K views • 1 day ago", thumbnail:"https://picsum.photos/seed/janiy/400/225", videoUrl:"https://www.tiktok.com/@janiylive", awards:"🌟 Top Female Creator", verified:true },
+            { id:26, name:"Kea Kibrom", username:"@keakibrom", category:"tiktok", growth:2.0, sentiment:90, volume:"449.6K", data:[10,15,20,28,35,42,55,68,82,95,108], desc:"Female influencer.", recentPost:"🎬 'Lifestyle content ✨' — 320K views • 3 days ago", thumbnail:"https://picsum.photos/seed/kea/400/225", videoUrl:"https://www.tiktok.com/@keakibrom", awards:"🌟 Rising Female Creator", verified:false },
+            { id:27, name:"Segen Yifter", username:"@segenyifter", category:"tiktok", growth:1.5, sentiment:88, volume:"339K", data:[8,12,18,25,32,40,50,62,75,88], desc:"Female influencer.", recentPost:"🎬 'Lifestyle content ✨' — 280K views • 4 days ago", thumbnail:"https://picsum.photos/seed/segen/400/225", videoUrl:"https://www.tiktok.com/@segenyifter", awards:"🌟 Female Creator", verified:false },
+            { id:28, name:"Yoadan", username:"@yoadan", category:"tiktok", growth:1.8, sentiment:87, volume:"351.7K", data:[8,12,18,25,32,40,50,62,75,88], desc:"Female TikTok creator.", recentPost:"🎬 'Lifestyle content ✨' — 290K views • 4 days ago", thumbnail:"https://picsum.photos/seed/yoadan/400/225", videoUrl:"https://www.tiktok.com/@yoadan", awards:"🌟 Female Creator", verified:false },
+            { id:29, name:"Birkti Shimeles", username:"@birkitishimeles", category:"tiktok", growth:1.2, sentiment:86, volume:"281.4K", data:[5,8,12,18,25,32,40,50,62,75], desc:"Female influencer.", recentPost:"🎬 'Lifestyle content ✨' — 250K views • 5 days ago", thumbnail:"https://picsum.photos/seed/birkti/400/225", videoUrl:"https://www.tiktok.com/@birkitishimeles", awards:"🌟 Female Creator", verified:false },
+            { id:30, name:"Mekita_ta_ta", username:"@mekita_ta_ta", category:"tiktok", growth:2.5, sentiment:85, volume:"422.5K", data:[8,12,18,25,32,40,50,62,75,88], desc:"Female TikTok creator.", recentPost:"🎬 'New video!' — 350K views • 3 days ago", thumbnail:"https://picsum.photos/seed/mekita/400/225", videoUrl:"https://www.tiktok.com/@mekita_ta_ta", awards:"🌟 Female Creator", verified:false }
         ];
 
         const instagramCreators = [
-            { id: 101, name: "Danayit", username: "@danayit", category: "instagram", growth: 12.4, sentiment: 94,
-                volume: "1.6M", data: [15, 20, 28, 35, 45, 58, 72, 88, 105, 120, 135, 148, 160],
-                desc: "TV personality and influencer.",
-                recentPost: "🎬 'New content coming soon! ✨' — 450K likes • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/danayit/400/225", videoUrl: null,
-                awards: "🌟 TV Personality", verified: true },
-            { id: 102, name: "Hanan Tarq Obid", username: "@hanan_tarq_obid", category: "instagram", growth: 8.7,
-                sentiment: 91, volume: "1.4M", data: [12, 18, 25, 32, 42, 55, 68, 82, 98, 115, 130, 145],
-                desc: "Prominent influencer.",
-                recentPost: "📸 'Life moments with Hanan ✨' — 320K likes • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/hanan/400/225", videoUrl: null,
-                awards: "🌟 Influencer", verified: true },
-            { id: 103, name: "DJ Sinyorita", username: "@dj_sinyorita", category: "instagram", growth: 15.6,
-                sentiment: 88, volume: "2.4M", data: [10, 15, 22, 30, 40, 52, 65, 78, 92, 108, 125, 140],
-                desc: "Music content creator and DJ.",
-                recentPost: "🎵 'New mix dropping soon! 🎶' — 280K likes • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/sinyorita/400/225", videoUrl: null,
-                awards: "🌟 Music Creator", verified: true },
-            { id: 104, name: "Sam Spov", username: "@samspov1", category: "instagram", growth: 6.2, sentiment: 89,
-                volume: "632K", data: [8, 12, 18, 25, 35, 48, 60, 74, 88, 102, 118, 132],
-                desc: "Lifestyle influencer.",
-                recentPost: "📸 'Daily vibes ✨' — 250K likes • 5 days ago",
-                thumbnail: "https://picsum.photos/seed/samspov/400/225", videoUrl: null,
-                awards: "🌟 Lifestyle Creator", verified: false },
-            { id: 105, name: "Lidiana Solomon", username: "@lidiana_solomon", category: "instagram", growth: 18.9,
-                sentiment: 93, volume: "650K", data: [10, 15, 22, 30, 40, 52, 65, 78, 92, 108, 125, 140],
-                desc: "Model and fashion influencer.",
-                recentPost: "👗 'Ethiopian fashion style ✨' — 380K likes • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/lidiana/400/225", videoUrl: null,
-                awards: "🌟 Model • Fashion", verified: false },
-            { id: 106, name: "Semie Yemariamwork", username: "@semie_yemariamwork", category: "instagram", growth: 9.8,
-                sentiment: 84, volume: "654.8K", data: [8, 12, 18, 25, 35, 48, 60, 74, 88, 102, 118, 132],
-                desc: "Lifestyle and culture.",
-                recentPost: "📸 'Living life ✨' — 180K likes • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/semie/400/225", videoUrl: null,
-                awards: "🌟 Lifestyle Creator", verified: false },
-            { id: 107, name: "Blen Mamo", username: "@blen_mamo", category: "instagram", growth: 22.1, sentiment: 86,
-                volume: "644.5K", data: [6, 10, 15, 22, 30, 42, 55, 68, 82, 95, 110, 125],
-                desc: "Lifestyle and fashion.",
-                recentPost: "👗 'Style and fashion ✨' — 220K likes • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/blen/400/225", videoUrl: null,
-                awards: "🌟 Fashion Creator", verified: false },
-            { id: 108, name: "Addisalem Getaneh", username: "@addisalem_getaneh", category: "instagram", growth: 14.3,
-                sentiment: 90, volume: "500K+", data: [8, 12, 18, 25, 35, 48, 60, 74, 88, 102, 118, 132],
-                desc: "Lifestyle and culture.",
-                recentPost: "📸 'Ethiopian culture ✨' — 320K likes • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/addisalem/400/225", videoUrl: null,
-                awards: "🌟 Cultural Influencer", verified: false },
-            { id: 109, name: "Selam Romantesfaye", username: "@selam_romantesfaye", category: "instagram", growth: 7.6,
-                sentiment: 87, volume: "400K+", data: [6, 10, 15, 22, 30, 42, 55, 68, 82, 95, 110, 125],
-                desc: "Fashion influencer.",
-                recentPost: "👗 'Fashionista vibes ✨' — 180K likes • 5 days ago",
-                thumbnail: "https://picsum.photos/seed/selamrom/400/225", videoUrl: null,
-                awards: "🌟 Fashion Influencer", verified: false },
-            { id: 110, name: "Yared Negot", username: "@yared_negot", category: "instagram", growth: 19.7,
-                sentiment: 92, volume: "300K+", data: [5, 8, 12, 18, 25, 35, 48, 60, 74, 88, 102, 115],
-                desc: "Motivational content.",
-                recentPost: "💪 'Stay motivated ✨' — 280K likes • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/yared/400/225", videoUrl: null,
-                awards: "🌟 Motivational Creator", verified: false },
-            { id: 111, name: "Nigist Fikire", username: "@nigist_fikire", category: "instagram", growth: 5.9,
-                sentiment: 82, volume: "300K+", data: [5, 8, 12, 18, 25, 35, 48, 60, 74, 88, 102, 115],
-                desc: "Lifestyle and culture.",
-                recentPost: "📸 'Life moments ✨' — 150K likes • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/nigist/400/225", videoUrl: null,
-                awards: "🌟 Lifestyle Creator", verified: false },
-            { id: 112, name: "Maramawit Abate", username: "@maramawit_abate", category: "instagram", growth: 16.8,
-                sentiment: 95, volume: "200K+", data: [4, 7, 10, 15, 20, 30, 42, 55, 68, 82, 95, 108],
-                desc: "Fashion and lifestyle.",
-                recentPost: "👗 'Fashion and style ✨' — 220K likes • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/maramawit/400/225", videoUrl: null,
-                awards: "🌟 Fashion Creator", verified: false },
-            { id: 113, name: "Hana Merhatsidek", username: "@hana__merhatsidek", category: "instagram", growth: 4.8,
-                sentiment: 80, volume: "200K+", data: [4, 7, 10, 15, 20, 30, 42, 55, 68, 82, 95, 108],
-                desc: "Lifestyle influencer.",
-                recentPost: "📸 'Daily vibes ✨' — 120K likes • 5 days ago",
-                thumbnail: "https://picsum.photos/seed/hana/400/225", videoUrl: null,
-                awards: "🌟 Lifestyle Creator", verified: false },
-            { id: 114, name: "Fly Ethiopian", username: "@fly.ethiopian", category: "instagram", growth: 11.2,
-                sentiment: 88, volume: "216.3K", data: [4, 7, 10, 15, 20, 30, 42, 55, 68, 82, 95, 108],
-                desc: "Travel and aviation.",
-                recentPost: "✈️ 'Ethiopian skies ✨' — 160K likes • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/flyethiopian/400/225", videoUrl: null,
-                awards: "🌟 Travel Page", verified: false },
-            { id: 115, name: "Nafkot Promotion", username: "@nafkot__promotion", category: "instagram", growth: 13.4,
-                sentiment: 81, volume: "220.3K", data: [3, 6, 9, 12, 18, 25, 35, 48, 60, 74, 88, 100],
-                desc: "Promotions page.",
-                recentPost: "📱 'Promotions and updates ✨' — 130K likes • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/nafkot/400/225", videoUrl: null,
-                awards: "🌟 Promotions Page", verified: false }
+            { id:101, name:"Danayit", username:"@danayit", category:"instagram", growth:12.4, sentiment:94, volume:"1.6M", data:[15,20,28,35,45,58,72,88,105,120,135,148,160], desc:"TV personality and influencer.", recentPost:"🎬 'New content coming soon! ✨' — 450K likes • 2 days ago", thumbnail:"https://picsum.photos/seed/danayit/400/225", videoUrl:null, awards:"🌟 TV Personality", verified:true },
+            { id:102, name:"Hanan Tarq Obid", username:"@hanan_tarq_obid", category:"instagram", growth:8.7, sentiment:91, volume:"1.4M", data:[12,18,25,32,42,55,68,82,98,115,130,145], desc:"Prominent influencer.", recentPost:"📸 'Life moments with Hanan ✨' — 320K likes • 4 days ago", thumbnail:"https://picsum.photos/seed/hanan/400/225", videoUrl:null, awards:"🌟 Influencer", verified:true },
+            { id:103, name:"DJ Sinyorita", username:"@dj_sinyorita", category:"instagram", growth:15.6, sentiment:88, volume:"2.4M", data:[10,15,22,30,40,52,65,78,92,108,125,140], desc:"Music content creator and DJ.", recentPost:"🎵 'New mix dropping soon! 🎶' — 280K likes • 3 days ago", thumbnail:"https://picsum.photos/seed/sinyorita/400/225", videoUrl:null, awards:"🌟 Music Creator", verified:true },
+            { id:104, name:"Sam Spov", username:"@samspov1", category:"instagram", growth:6.2, sentiment:89, volume:"632K", data:[8,12,18,25,35,48,60,74,88,102,118,132], desc:"Lifestyle influencer.", recentPost:"📸 'Daily vibes ✨' — 250K likes • 5 days ago", thumbnail:"https://picsum.photos/seed/samspov/400/225", videoUrl:null, awards:"🌟 Lifestyle Creator", verified:false },
+            { id:105, name:"Lidiana Solomon", username:"@lidiana_solomon", category:"instagram", growth:18.9, sentiment:93, volume:"650K", data:[10,15,22,30,40,52,65,78,92,108,125,140], desc:"Model and fashion influencer.", recentPost:"👗 'Ethiopian fashion style ✨' — 380K likes • 2 days ago", thumbnail:"https://picsum.photos/seed/lidiana/400/225", videoUrl:null, awards:"🌟 Model • Fashion", verified:false },
+            { id:106, name:"Semie Yemariamwork", username:"@semie_yemariamwork", category:"instagram", growth:9.8, sentiment:84, volume:"654.8K", data:[8,12,18,25,35,48,60,74,88,102,118,132], desc:"Lifestyle and culture.", recentPost:"📸 'Living life ✨' — 180K likes • 4 days ago", thumbnail:"https://picsum.photos/seed/semie/400/225", videoUrl:null, awards:"🌟 Lifestyle Creator", verified:false },
+            { id:107, name:"Blen Mamo", username:"@blen_mamo", category:"instagram", growth:22.1, sentiment:86, volume:"644.5K", data:[6,10,15,22,30,42,55,68,82,95,110,125], desc:"Lifestyle and fashion.", recentPost:"👗 'Style and fashion ✨' — 220K likes • 3 days ago", thumbnail:"https://picsum.photos/seed/blen/400/225", videoUrl:null, awards:"🌟 Fashion Creator", verified:false },
+            { id:108, name:"Addisalem Getaneh", username:"@addisalem_getaneh", category:"instagram", growth:14.3, sentiment:90, volume:"500K+", data:[8,12,18,25,35,48,60,74,88,102,118,132], desc:"Lifestyle and culture.", recentPost:"📸 'Ethiopian culture ✨' — 320K likes • 2 days ago", thumbnail:"https://picsum.photos/seed/addisalem/400/225", videoUrl:null, awards:"🌟 Cultural Influencer", verified:false },
+            { id:109, name:"Selam Romantesfaye", username:"@selam_romantesfaye", category:"instagram", growth:7.6, sentiment:87, volume:"400K+", data:[6,10,15,22,30,42,55,68,82,95,110,125], desc:"Fashion influencer.", recentPost:"👗 'Fashionista vibes ✨' — 180K likes • 5 days ago", thumbnail:"https://picsum.photos/seed/selamrom/400/225", videoUrl:null, awards:"🌟 Fashion Influencer", verified:false },
+            { id:110, name:"Yared Negot", username:"@yared_negot", category:"instagram", growth:19.7, sentiment:92, volume:"300K+", data:[5,8,12,18,25,35,48,60,74,88,102,115], desc:"Motivational content.", recentPost:"💪 'Stay motivated ✨' — 280K likes • 2 days ago", thumbnail:"https://picsum.photos/seed/yared/400/225", videoUrl:null, awards:"🌟 Motivational Creator", verified:false },
+            { id:111, name:"Nigist Fikire", username:"@nigist_fikire", category:"instagram", growth:5.9, sentiment:82, volume:"300K+", data:[5,8,12,18,25,35,48,60,74,88,102,115], desc:"Lifestyle and culture.", recentPost:"📸 'Life moments ✨' — 150K likes • 4 days ago", thumbnail:"https://picsum.photos/seed/nigist/400/225", videoUrl:null, awards:"🌟 Lifestyle Creator", verified:false },
+            { id:112, name:"Maramawit Abate", username:"@maramawit_abate", category:"instagram", growth:16.8, sentiment:95, volume:"200K+", data:[4,7,10,15,20,30,42,55,68,82,95,108], desc:"Fashion and lifestyle.", recentPost:"👗 'Fashion and style ✨' — 220K likes • 3 days ago", thumbnail:"https://picsum.photos/seed/maramawit/400/225", videoUrl:null, awards:"🌟 Fashion Creator", verified:false },
+            { id:113, name:"Hana Merhatsidek", username:"@hana__merhatsidek", category:"instagram", growth:4.8, sentiment:80, volume:"200K+", data:[4,7,10,15,20,30,42,55,68,82,95,108], desc:"Lifestyle influencer.", recentPost:"📸 'Daily vibes ✨' — 120K likes • 5 days ago", thumbnail:"https://picsum.photos/seed/hana/400/225", videoUrl:null, awards:"🌟 Lifestyle Creator", verified:false },
+            { id:114, name:"Fly Ethiopian", username:"@fly.ethiopian", category:"instagram", growth:11.2, sentiment:88, volume:"216.3K", data:[4,7,10,15,20,30,42,55,68,82,95,108], desc:"Travel and aviation.", recentPost:"✈️ 'Ethiopian skies ✨' — 160K likes • 4 days ago", thumbnail:"https://picsum.photos/seed/flyethiopian/400/225", videoUrl:null, awards:"🌟 Travel Page", verified:false },
+            { id:115, name:"Nafkot Promotion", username:"@nafkot__promotion", category:"instagram", growth:13.4, sentiment:81, volume:"220.3K", data:[3,6,9,12,18,25,35,48,60,74,88,100], desc:"Promotions page.", recentPost:"📱 'Promotions and updates ✨' — 130K likes • 3 days ago", thumbnail:"https://picsum.photos/seed/nafkot/400/225", videoUrl:null, awards:"🌟 Promotions Page", verified:false }
         ];
 
         const youtubeCreators = [
-            { id: 201, name: "Hope Music Ethiopia", username: "@HopeMusicEthiopia", category: "youtube", growth: 15.8,
-                sentiment: 96, volume: "3.86M", data: [20, 28, 38, 50, 65, 80, 98, 112, 130, 145, 160, 175, 190],
-                desc: "Most-followed Ethiopian YouTube channel.",
-                recentPost: "🎵 'New Ethiopian music video 🎶' — 1.8M views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/hopemusic/400/225", videoUrl: null,
-                awards: "🏆 YouTube Creator of the Year", verified: true },
-            { id: 202, name: "Donkey Tube", username: "@donkeytube.eshetumelese", category: "youtube", growth: 12.3,
-                sentiment: 93, volume: "3.23M", data: [18, 25, 35, 48, 60, 75, 90, 108, 125, 140, 155, 170],
-                desc: "Entertainment and comedy.",
-                recentPost: "😂 'New comedy skit!' — 1.2M views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/donkeytube/400/225", videoUrl: null,
-                awards: "🌟 Comedy Creator", verified: true },
-            { id: 203, name: "AlNojomia", username: "@AlNojomia", category: "youtube", growth: 18.2, sentiment: 95,
-                volume: "2.67M", data: [15, 22, 32, 45, 58, 72, 88, 105, 122, 138, 155, 172],
-                desc: "People & blogs.",
-                recentPost: "📸 'New vlog! ✨' — 2.1M views • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/alnojomia/400/225", videoUrl: null,
-                awards: "🏆 People & Blogs", verified: true },
-            { id: 204, name: "EBC", username: "@EBC", category: "youtube", growth: 22.4, sentiment: 94, volume: "2.10M",
-                data: [12, 18, 28, 40, 52, 68, 82, 98, 115, 130, 145, 160],
-                desc: "Ethiopian Broadcasting Corporation.",
-                recentPost: "📰 'Ethiopia news update 🇪🇹' — 980K views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/ebc/400/225", videoUrl: null,
-                awards: "🏆 News Channel of the Year", verified: true },
-            { id: 205, name: "الريماس - Remix Alremas", username: "@vlog-alremas", category: "youtube", growth: 9.6,
-                sentiment: 89, volume: "2.13M", data: [10, 15, 22, 32, 45, 58, 72, 88, 105, 120, 135, 150],
-                desc: "People & blogs.",
-                recentPost: "📸 'New vlog!' — 850K views • 5 days ago",
-                thumbnail: "https://picsum.photos/seed/alremas/400/225", videoUrl: null,
-                awards: "🌟 People & Blogs", verified: true },
-            { id: 206, name: "Fana Television", username: "@FanaTelevision", category: "youtube", growth: 14.7,
-                sentiment: 92, volume: "1.89M", data: [8, 12, 18, 28, 38, 52, 65, 80, 95, 110, 125, 140],
-                desc: "Major Ethiopian TV station.",
-                recentPost: "📰 'Ethiopia news' — 720K views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/fanatv/400/225", videoUrl: null,
-                awards: "🌟 News Channel", verified: false },
-            { id: 207, name: "Kana Television", username: "@KanaTelevision", category: "youtube", growth: 11.8,
-                sentiment: 95, volume: "1.75M", data: [6, 10, 15, 22, 32, 45, 58, 72, 88, 102, 118, 132],
-                desc: "Ethiopian TV station.",
-                recentPost: "📰 'Ethiopia news' — 580K views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/kanatv/400/225", videoUrl: null,
-                awards: "🌟 Entertainment", verified: false },
-            { id: 208, name: "Ethio Forum", username: "@ethioforum", category: "youtube", growth: 20.1, sentiment: 90,
-                volume: "1.41M", data: [6, 10, 15, 22, 32, 45, 58, 72, 88, 102, 118, 132],
-                desc: "News and politics.",
-                recentPost: "📰 'Ethiopia news update' — 650K views • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/ethioforum/400/225", videoUrl: null,
-                awards: "🌟 News & Politics", verified: false },
-            { id: 209, name: "Oromp3", username: "@Oromp3", category: "youtube", growth: 16.5, sentiment: 84,
-                volume: "1.15M", data: [5, 8, 12, 18, 25, 35, 48, 60, 74, 88, 102, 115],
-                desc: "Music channel.",
-                recentPost: "🎵 'New music 🎶' — 380K views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/oromp3/400/225", videoUrl: null,
-                awards: "🌟 Music Channel", verified: false },
-            { id: 210, name: "Arada Movies", username: "@AradaMovies", category: "youtube", growth: 8.9, sentiment: 87,
-                volume: "1.00M+", data: [5, 8, 12, 18, 25, 35, 48, 60, 74, 88, 102, 115],
-                desc: "Ethiopian movie channel.",
-                recentPost: "🎬 'New Ethiopian movie 🎥' — 420K views • 5 days ago",
-                thumbnail: "https://picsum.photos/seed/aradamovies/400/225", videoUrl: null,
-                awards: "🌟 Movie Channel", verified: false },
-            { id: 211, name: "AGAPE", username: "@AGAPE", category: "youtube", growth: 7.2, sentiment: 82,
-                volume: "~1.00M", data: [4, 7, 10, 15, 20, 30, 42, 55, 68, 82, 95, 108],
-                desc: "Entertainment channel.",
-                recentPost: "🎬 'New content! ✨' — 520K views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/agape/400/225", videoUrl: null,
-                awards: "🌟 Entertainment", verified: false },
-            { id: 212, name: "Andafta", username: "@Andafta", category: "youtube", growth: 13.2, sentiment: 91,
-                volume: "988K", data: [4, 7, 10, 15, 20, 30, 42, 55, 68, 82, 95, 108],
-                desc: "Ethiopian entertainment.",
-                recentPost: "🎬 'New entertainment! ✨' — 480K views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/andafta/400/225", videoUrl: null,
-                awards: "🌟 Entertainment Channel", verified: false },
-            { id: 213, name: "Addis Compass Media", username: "@AddisCompassMedia", category: "youtube", growth: 10.5,
-                sentiment: 86, volume: "~72K", data: [3, 6, 9, 12, 18, 25, 35, 48, 60, 74, 88, 100],
-                desc: "News and politics.",
-                recentPost: "📰 'Ethiopia news' — 320K views • 4 days ago",
-                thumbnail: "https://picsum.photos/seed/addiscompass/400/225", videoUrl: null,
-                awards: "🌟 News & Politics", verified: false },
-            { id: 214, name: "EMS", username: "@EMS", category: "youtube", growth: 19.8, sentiment: 93, volume: "370K",
-                data: [3, 6, 9, 12, 18, 25, 35, 48, 60, 74, 88, 100],
-                desc: "Ethiopian Media Services.",
-                recentPost: "📰 'Ethiopia news update' — 350K views • 2 days ago",
-                thumbnail: "https://picsum.photos/seed/ems/400/225", videoUrl: null,
-                awards: "🌟 News Channel", verified: false },
-            { id: 215, name: "Ethio Media", username: "@EthioMedia", category: "youtube", growth: 12.9, sentiment: 94,
-                volume: "212K", data: [3, 6, 9, 12, 18, 25, 35, 48, 60, 74, 88, 100],
-                desc: "Entertainment channel.",
-                recentPost: "🎬 'New entertainment!' — 280K views • 3 days ago",
-                thumbnail: "https://picsum.photos/seed/ethiomedia/400/225", videoUrl: null,
-                awards: "🌟 Entertainment Channel", verified: false }
+            { id:201, name:"Hope Music Ethiopia", username:"@HopeMusicEthiopia", category:"youtube", growth:15.8, sentiment:96, volume:"3.86M", data:[20,28,38,50,65,80,98,112,130,145,160,175,190], desc:"Most-followed Ethiopian YouTube channel.", recentPost:"🎵 'New Ethiopian music video 🎶' — 1.8M views • 3 days ago", thumbnail:"https://picsum.photos/seed/hopemusic/400/225", videoUrl:null, awards:"🏆 YouTube Creator of the Year", verified:true },
+            { id:202, name:"Donkey Tube", username:"@donkeytube.eshetumelese", category:"youtube", growth:12.3, sentiment:93, volume:"3.23M", data:[18,25,35,48,60,75,90,108,125,140,155,170], desc:"Entertainment and comedy.", recentPost:"😂 'New comedy skit!' — 1.2M views • 4 days ago", thumbnail:"https://picsum.photos/seed/donkeytube/400/225", videoUrl:null, awards:"🌟 Comedy Creator", verified:true },
+            { id:203, name:"AlNojomia", username:"@AlNojomia", category:"youtube", growth:18.2, sentiment:95, volume:"2.67M", data:[15,22,32,45,58,72,88,105,122,138,155,172], desc:"People & blogs.", recentPost:"📸 'New vlog! ✨' — 2.1M views • 2 days ago", thumbnail:"https://picsum.photos/seed/alnojomia/400/225", videoUrl:null, awards:"🏆 People & Blogs", verified:true },
+            { id:204, name:"EBC", username:"@EBC", category:"youtube", growth:22.4, sentiment:94, volume:"2.10M", data:[12,18,28,40,52,68,82,98,115,130,145,160], desc:"Ethiopian Broadcasting Corporation.", recentPost:"📰 'Ethiopia news update 🇪🇹' — 980K views • 3 days ago", thumbnail:"https://picsum.photos/seed/ebc/400/225", videoUrl:null, awards:"🏆 News Channel of the Year", verified:true },
+            { id:205, name:"الريماس - Remix Alremas", username:"@vlog-alremas", category:"youtube", growth:9.6, sentiment:89, volume:"2.13M", data:[10,15,22,32,45,58,72,88,105,120,135,150], desc:"People & blogs.", recentPost:"📸 'New vlog!' — 850K views • 5 days ago", thumbnail:"https://picsum.photos/seed/alremas/400/225", videoUrl:null, awards:"🌟 People & Blogs", verified:true },
+            { id:206, name:"Fana Television", username:"@FanaTelevision", category:"youtube", growth:14.7, sentiment:92, volume:"1.89M", data:[8,12,18,28,38,52,65,80,95,110,125,140], desc:"Major Ethiopian TV station.", recentPost:"📰 'Ethiopia news' — 720K views • 4 days ago", thumbnail:"https://picsum.photos/seed/fanatv/400/225", videoUrl:null, awards:"🌟 News Channel", verified:false },
+            { id:207, name:"Kana Television", username:"@KanaTelevision", category:"youtube", growth:11.8, sentiment:95, volume:"1.75M", data:[6,10,15,22,32,45,58,72,88,102,118,132], desc:"Ethiopian TV station.", recentPost:"📰 'Ethiopia news' — 580K views • 3 days ago", thumbnail:"https://picsum.photos/seed/kanatv/400/225", videoUrl:null, awards:"🌟 Entertainment", verified:false },
+            { id:208, name:"Ethio Forum", username:"@ethioforum", category:"youtube", growth:20.1, sentiment:90, volume:"1.41M", data:[6,10,15,22,32,45,58,72,88,102,118,132], desc:"News and politics.", recentPost:"📰 'Ethiopia news update' — 650K views • 2 days ago", thumbnail:"https://picsum.photos/seed/ethioforum/400/225", videoUrl:null, awards:"🌟 News & Politics", verified:false },
+            { id:209, name:"Oromp3", username:"@Oromp3", category:"youtube", growth:16.5, sentiment:84, volume:"1.15M", data:[5,8,12,18,25,35,48,60,74,88,102,115], desc:"Music channel.", recentPost:"🎵 'New music 🎶' — 380K views • 4 days ago", thumbnail:"https://picsum.photos/seed/oromp3/400/225", videoUrl:null, awards:"🌟 Music Channel", verified:false },
+            { id:210, name:"Arada Movies", username:"@AradaMovies", category:"youtube", growth:8.9, sentiment:87, volume:"1.00M+", data:[5,8,12,18,25,35,48,60,74,88,102,115], desc:"Ethiopian movie channel.", recentPost:"🎬 'New Ethiopian movie 🎥' — 420K views • 5 days ago", thumbnail:"https://picsum.photos/seed/aradamovies/400/225", videoUrl:null, awards:"🌟 Movie Channel", verified:false },
+            { id:211, name:"AGAPE", username:"@AGAPE", category:"youtube", growth:7.2, sentiment:82, volume:"~1.00M", data:[4,7,10,15,20,30,42,55,68,82,95,108], desc:"Entertainment channel.", recentPost:"🎬 'New content! ✨' — 520K views • 3 days ago", thumbnail:"https://picsum.photos/seed/agape/400/225", videoUrl:null, awards:"🌟 Entertainment", verified:false },
+            { id:212, name:"Andafta", username:"@Andafta", category:"youtube", growth:13.2, sentiment:91, volume:"988K", data:[4,7,10,15,20,30,42,55,68,82,95,108], desc:"Ethiopian entertainment.", recentPost:"🎬 'New entertainment! ✨' — 480K views • 3 days ago", thumbnail:"https://picsum.photos/seed/andafta/400/225", videoUrl:null, awards:"🌟 Entertainment Channel", verified:false },
+            { id:213, name:"Addis Compass Media", username:"@AddisCompassMedia", category:"youtube", growth:10.5, sentiment:86, volume:"~72K", data:[3,6,9,12,18,25,35,48,60,74,88,100], desc:"News and politics.", recentPost:"📰 'Ethiopia news' — 320K views • 4 days ago", thumbnail:"https://picsum.photos/seed/addiscompass/400/225", videoUrl:null, awards:"🌟 News & Politics", verified:false },
+            { id:214, name:"EMS", username:"@EMS", category:"youtube", growth:19.8, sentiment:93, volume:"370K", data:[3,6,9,12,18,25,35,48,60,74,88,100], desc:"Ethiopian Media Services.", recentPost:"📰 'Ethiopia news update' — 350K views • 2 days ago", thumbnail:"https://picsum.photos/seed/ems/400/225", videoUrl:null, awards:"🌟 News Channel", verified:false },
+            { id:215, name:"Ethio Media", username:"@EthioMedia", category:"youtube", growth:12.9, sentiment:94, volume:"212K", data:[3,6,9,12,18,25,35,48,60,74,88,100], desc:"Entertainment channel.", recentPost:"🎬 'New entertainment!' — 280K views • 3 days ago", thumbnail:"https://picsum.photos/seed/ethiomedia/400/225", videoUrl:null, awards:"🌟 Entertainment Channel", verified:false }
         ];
 
         let allCreators = [...tiktokCreators, ...instagramCreators, ...youtubeCreators];
@@ -1009,7 +733,6 @@
         // ================================================================
         // GLOBAL STATE
         // ================================================================
-
         let state = {
             isPremium: false,
             analysesUsed: 0,
@@ -1031,9 +754,36 @@
         const toast = $('toast');
 
         // ================================================================
-        // SANITIZE HTML — Prevents XSS
+        // FINGERPRINT & USER STATUS (UPDATED: uses /api/analyze)
         // ================================================================
+        function getFingerprint() {
+            let fp = localStorage.getItem('ethiotrend_fingerprint');
+            if (!fp) {
+                fp = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+                localStorage.setItem('ethiotrend_fingerprint', fp);
+            }
+            return fp;
+        }
 
+        async function fetchUserStatus() {
+            try {
+                const fp = getFingerprint();
+                const res = await fetch(`/api/analyze?fingerprint=${encodeURIComponent(fp)}`);
+                const data = await res.json();
+                if (data.success) {
+                    state.isPremium = data.user.is_premium;
+                    state.analysesUsed = data.user.analyses_used || 0;
+                    state.maxFree = data.user.analyses_limit || 1;
+                    updateStatsUI();
+                }
+            } catch (e) {
+                console.warn('Could not fetch user status', e);
+            }
+        }
+
+        // ================================================================
+        // SANITIZE HTML
+        // ================================================================
         function sanitizeHTML(str) {
             const div = document.createElement('div');
             div.textContent = str;
@@ -1041,9 +791,8 @@
         }
 
         // ================================================================
-        // TOAST QUEUE SYSTEM
+        // TOAST QUEUE
         // ================================================================
-
         const toastQueue = [];
         let toastProcessing = false;
 
@@ -1072,9 +821,8 @@
         }
 
         // ================================================================
-        // MOVIE HELPERS
+        // MOVIE HELPERS & CAROUSEL
         // ================================================================
-
         function getThumbnail(movie) {
             if (movie.isPlaylist) {
                 return 'data:image/svg+xml,' + encodeURIComponent(
@@ -1114,10 +862,6 @@
                 }
             }
         }
-
-        // ================================================================
-        // MOVIE CAROUSEL
-        // ================================================================
 
         function initMovieCarousel() {
             const track = document.getElementById('movieTrack');
@@ -1170,7 +914,6 @@
             });
             setTimeout(updatePlaylistThumbnails, 500);
 
-            // Focus trap
             trapFocus($('movieModal'));
         }
 
@@ -1225,9 +968,8 @@
         }
 
         // ================================================================
-        // FOCUS TRAPPING (Accessibility)
+        // FOCUS TRAPPING
         // ================================================================
-
         function trapFocus(element) {
             if (!element) return;
             const focusable = element.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
@@ -1261,7 +1003,6 @@
         // ================================================================
         // LIVE ENGAGEMENT TICKER
         // ================================================================
-
         let engagementData = {
             totalViews: 0,
             totalLikes: 0,
@@ -1367,11 +1108,9 @@
         }
 
         // ================================================================
-        // AUTO-REFRESH — Improved (clones array before sorting)
+        // AUTO-REFRESH
         // ================================================================
-
         function refreshLiveData() {
-            // Clone the array so we don't destroy the original order
             const workingCreators = [...allCreators];
 
             workingCreators.forEach(creator => {
@@ -1414,10 +1153,8 @@
                 }
             });
 
-            // Update allCreators with the new data (preserve original order)
             allCreators = workingCreators;
 
-            // Re-render display
             renderStats();
             renderList();
             renderTopPerformers();
@@ -1446,7 +1183,6 @@
         // ================================================================
         // THEME
         // ================================================================
-
         function getPreferredTheme() {
             return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
         }
@@ -1469,7 +1205,6 @@
         // ================================================================
         // TAB SWITCHING
         // ================================================================
-
         function switchTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -1480,9 +1215,8 @@
         }
 
         // ================================================================
-        // SEARCH — Debounced + Keyboard Navigation + Click Outside
+        // SEARCH
         // ================================================================
-
         let searchDebounceTimer;
         let suggestionIndex = -1;
 
@@ -1559,7 +1293,6 @@
             }, 250);
         }
 
-        // Keyboard navigation for search results
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = $('searchInput');
             if (searchInput) {
@@ -1589,7 +1322,6 @@
                 });
             }
 
-            // Close search when clicking outside
             document.addEventListener('click', (e) => {
                 const box = $('searchBox');
                 if (box && !box.contains(e.target)) {
@@ -1614,7 +1346,6 @@
         // ================================================================
         // LIVE FEED
         // ================================================================
-
         function shuffleArray(arr) {
             for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));
                 [arr[i], arr[j]] = [arr[j], arr[i]]; }
@@ -1635,7 +1366,6 @@
         // ================================================================
         // TREND FUNCTIONS
         // ================================================================
-
         function getFiltered() {
             return allCreators.filter(t => {
                 const mc = state.activeCategory === 'all' || t.category === state.activeCategory;
@@ -1855,7 +1585,6 @@
         // ================================================================
         // EXTERNAL TRENDS
         // ================================================================
-
         async function fetchExternalTrends() {
             try {
                 const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(
@@ -1870,7 +1599,7 @@
                 items.forEach(item => {
                     const title = item.querySelector('title')?.textContent;
                     if (title && !title.includes(' - ') && !title.includes('|')) {
-                        let clean = title.replace(/\(.*?\)/g, '').trim();
+                        let clean = title.replace(/<[^>]*>/g, '').trim();
                         if (clean.length > 60) clean = clean.substring(0, 60) + '...';
                         if (clean.length > 5) titles.push(clean);
                     }
@@ -1879,7 +1608,8 @@
                     items.forEach(item => {
                         const desc = item.querySelector('description')?.textContent;
                         if (desc) {
-                            const words = desc.split(/\s+/).slice(0, 10).join(' ');
+                            const clean = desc.replace(/<[^>]*>/g, '').trim();
+                            const words = clean.split(/\s+/).slice(0, 10).join(' ');
                             if (words.length > 10) titles.push(words);
                         }
                     });
@@ -1924,7 +1654,6 @@
         // ================================================================
         // FLAGGED CONTENT
         // ================================================================
-
         const flaggedEnglish = ['sex', 'porn', 'nude', 'naked', 'xxx', 'fuck', 'shit', 'bitch', 'whore', 'slut', 'dick',
             'cock', 'pussy', 'asshole', 'bastard', 'cunt', 'motherfucker', 'fag', 'retard', 'dumbass', 'bastard'
         ];
@@ -1940,7 +1669,6 @@
         // ================================================================
         // AI ENGINE
         // ================================================================
-
         function analyzeText(text, trends = []) {
             if (!text || !text.trim()) {
                 return { score: 0, sentiment: 'neutral', sentimentScore: 50, wordCount: 0, hasEmojis: false, hasQuestions: false,
@@ -2109,7 +1837,6 @@
         // ================================================================
         // ANALYZE BUTTON
         // ================================================================
-
         const analyzeBtn = $('analyzeBtn');
         const captionInput = $('captionInput');
         const videoInput = $('videoInput');
@@ -2187,44 +1914,10 @@
         });
 
         // ================================================================
-        // AI TOOLS - with sanitization
+        // AI TOOLS – UPDATED: uses /api/ai-tools with 'tool' parameter
         // ================================================================
-
-        function extractKeywords(text) {
-            const words = text.toLowerCase().split(/\s+/);
-            const stop = ['the', 'a', 'an', 'of', 'for', 'on', 'at', 'to', 'in', 'with', 'by', 'from', 'up', 'about',
-                'into', 'through', 'during', 'without', 'after', 'before', 'under', 'over', 'between'
-            ];
-            return words.filter(w => w.length > 2 && !stop.includes(w));
-        }
-
-        function findMatchingCreators(keywords, limit = 5) {
-            const scores = allCreators.map(c => {
-                const text = (c.name + ' ' + c.desc + ' ' + (c.username || '') + ' ' + c.category).toLowerCase();
-                let s = 0;
-                for (const kw of keywords) {
-                    if (text.includes(kw)) s += 2;
-                    if (c.name.toLowerCase().includes(kw)) s += 3;
-                    if (c.category && c.category.includes(kw)) s += 1;
-                }
-                return { ...c, matchScore: s };
-            });
-            scores.sort((a, b) => b.matchScore - a.matchScore);
-            return scores.filter(c => c.matchScore > 0).slice(0, limit);
-        }
-
-        function getTopByCategory(cat) {
-            return allCreators.filter(c => c.category === cat).sort((a, b) => b.growth - a.growth).slice(0, 3);
-        }
-
-        // Caption Generator
-        const captionGenBtn = $('captionGenBtn');
-        const captionGenInput = $('captionGenInput');
-        const captionGenOutput = $('captionGenOutput');
-        const captionGenResults = $('captionGenResults');
-
-        captionGenBtn.addEventListener('click', async function() {
-            const input = captionGenInput.value.trim();
+        document.getElementById('captionGenBtn').addEventListener('click', async function() {
+            const input = document.getElementById('captionGenInput').value.trim();
             if (!input) { showToast('⚠️ Please enter a topic', 'error'); return; }
             const flagged = detectFlaggedContent(input);
             if (flagged.length) { showToast('🚫 Inappropriate language detected in your input.', 'warning'); return; }
@@ -2232,155 +1925,101 @@
             this.innerHTML = '<span class="spinner-sm"></span> AI generating...';
             this.disabled = true;
             const trends = await updateExternalTrends();
-            const keywords = extractKeywords(input);
-            const matched = findMatchingCreators(keywords, 4);
 
-            setTimeout(() => {
-                const topic = keywords.slice(0, 2).join(' ') || input;
-                const hashtags = ['#Ethiopia', '#AddisAbaba', '#EthioTrend', '#' + topic.replace(/\s/g, '')].slice(0, 4);
-                if (trends.length) { const tag = '#' + trends[0].replace(/\s/g, '');
-                    if (!hashtags.includes(tag)) hashtags.push(tag); }
-                let ref = '';
-                if (matched.length) ref = `🔥 Like @${matched[0].username || matched[0].name} — `;
-                else if (trends.length) ref = `📰 Trending now: ${trends[0]} — `;
-
-                const captions = [
-                    `${ref}${topic} vibes in Ethiopia! 🇪🇹✨ ${hashtags.join(' ')}`,
-                    `✨ Discover the beauty of ${topic} — Ethiopian style! 🇪🇹 #${topic.replace(/\s/g, '')} ${hashtags.slice(0,2).join(' ')}`,
-                    `🎬 ${topic} like never before! Watch till the end 👀 #EthioTrend ${hashtags.slice(0,3).join(' ')}`,
-                    `💫 ${topic} — culture, tradition, and pure Ethiopian energy! #Habesha #${topic.replace(/\s/g, '')}`,
-                    `🚀 ${topic} content that will blow your mind! 🔥 #EthiopianTikTok ${hashtags.slice(0,2).join(' ')}`
-                ];
-                const shuffled = shuffleArray([...captions]);
-                const selected = shuffled.slice(0, 4);
-                let info = '';
-                if (trends.length) info = `🌐 External trends: ${trends.slice(0,3).join(', ')}`;
-
-                // SANITIZE user content
-                const sanitizedSelected = selected.map(c => sanitizeHTML(c));
-                captionGenResults.innerHTML = sanitizedSelected.map((c, i) =>
-                    `<div class="result-item"><span class="tag">#${i+1}</span> ${c}</div>`
-                ).join('') +
-                `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--text-tertiary);">
-                    📊 Based on ${matched.length ? matched.map(m=>m.name).join(', ') : 'trending creators'}${matched.length ? ` — top match: ${matched[0].name}` : ''}${info ? ' • ' + info : ''}
-                </div>`;
-                captionGenOutput.classList.add('show');
-                this.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Captions';
-                this.disabled = false;
-                showToast('✨ ' + selected.length + ' captions generated', 'success');
-            }, 1200);
+            try {
+                const res = await fetch('/api/ai-tools', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tool: 'caption', topic: input, trends })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const output = document.getElementById('captionGenOutput');
+                    const results = document.getElementById('captionGenResults');
+                    results.innerHTML = data.captions.map((c, i) =>
+                        `<div class="result-item"><span class="tag">#${i+1}</span> ${sanitizeHTML(c)}</div>`
+                    ).join('');
+                    output.classList.add('show');
+                    showToast('✨ ' + data.captions.length + ' captions generated', 'success');
+                } else {
+                    showToast('❌ ' + data.error, 'error');
+                }
+            } catch (e) {
+                showToast('❌ API error: ' + e.message, 'error');
+            }
+            this.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Captions';
+            this.disabled = false;
         });
 
-        // Virality Predictor
-        const viralityBtn = $('viralityBtn');
-        const viralityInput = $('viralityInput');
-        const viralityOutput = $('viralityOutput');
-        const viralityResults = $('viralityResults');
-
-        viralityBtn.addEventListener('click', async function() {
-            const input = viralityInput.value.trim();
+        document.getElementById('viralityBtn').addEventListener('click', async function() {
+            const input = document.getElementById('viralityInput').value.trim();
             if (!input) { showToast('⚠️ Please describe your content', 'error'); return; }
+
             this.innerHTML = '<span class="spinner-sm"></span> AI analyzing...';
             this.disabled = true;
             const trends = await updateExternalTrends();
-            const keywords = extractKeywords(input);
-            const matched = findMatchingCreators(keywords, 4);
 
-            setTimeout(() => {
-                const analysis = analyzeText(input, trends);
-                const score = generateViralScore(analysis);
-                const level = score >= 80 ? '🌟 High Viral Potential' : score >= 60 ? '📈 Moderate Potential' :
-                    '📉 Needs Improvement';
-                let insights = [`🎯 Viral Score: <span class="highlight">${score}%</span> — ${level}`,
-                    `📊 Quality: <span class="highlight">${analysis.quality}</span> (${analysis.wordCount} words)`,
-                    `💬 Sentiment: ${analysis.sentiment} (${analysis.sentimentScore}%)`
-                ];
-                if (analysis.hasFlagged) insights.push(
-                    `🚫 ⚠️ Inappropriate content: ${analysis.flagged.join(', ')} — revise to avoid being flagged.`
-                    );
-                if (analysis.topics.length) insights.push(`🏷️ Topics: ${analysis.topics.slice(0,4).join(', ')}`);
-                if (analysis.trendMatch > 0) insights.push(`🔥 Matches ${analysis.trendMatch} trending topics!`);
-                else if (trends.length) insights.push(`📰 Consider: ${trends.slice(0,3).join(', ')} — trending now.`);
-                if (matched.length) insights.push(
-                    `🏆 Top match: ${matched[0].name} (${matched[0].volume}) — ${matched[0].growth > 0 ? '+' : ''}${matched[0].growth}% growth`
-                    );
-                insights.push(`⏰ Best time: ${score >= 70 ? '7-9 PM EAT' : '12-2 PM EAT'}`);
-                if (score >= 70) insights.push('🚀 Strong viral potential!');
-                else if (score >= 50) insights.push('📈 Moderate. Add emojis, questions, CTA.');
-                else insights.push('💡 Needs improvement. Strengthen your hook.');
-
-                // SANITIZE insights
-                const sanitizedInsights = insights.map(i => sanitizeHTML(i));
-                viralityResults.innerHTML = sanitizedInsights.map(i =>
-                    `<div class="result-item">${i}</div>`
-                ).join('');
-                viralityOutput.classList.add('show');
-                this.innerHTML = '<i class="fas fa-chart-line"></i> Predict Virality';
-                this.disabled = false;
-                if (analysis.hasFlagged) showToast('🚫 Inappropriate language detected!', 'warning');
-                else showToast('📊 Virality score: ' + score + '%', 'success');
-            }, 1600);
+            try {
+                const res = await fetch('/api/ai-tools', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tool: 'virality', content: input, trends })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const output = document.getElementById('viralityOutput');
+                    const results = document.getElementById('viralityResults');
+                    results.innerHTML = data.insights.map(i =>
+                        `<div class="result-item">${sanitizeHTML(i)}</div>`
+                    ).join('');
+                    output.classList.add('show');
+                    showToast('📊 Analysis complete!', 'success');
+                } else {
+                    showToast('❌ ' + data.error, 'error');
+                }
+            } catch (e) {
+                showToast('❌ API error: ' + e.message, 'error');
+            }
+            this.innerHTML = '<i class="fas fa-chart-line"></i> Predict Virality';
+            this.disabled = false;
         });
 
-        // Content Optimizer
-        const optimizeBtn = $('optimizeBtn');
-        const optimizeInput = $('optimizeInput');
-        const optimizeOutput = $('optimizeOutput');
-        const optimizeResults = $('optimizeResults');
-
-        optimizeBtn.addEventListener('click', async function() {
-            const input = optimizeInput.value.trim();
+        document.getElementById('optimizeBtn').addEventListener('click', async function() {
+            const input = document.getElementById('optimizeInput').value.trim();
             if (!input) { showToast('⚠️ Please paste your content', 'error'); return; }
+
             this.innerHTML = '<span class="spinner-sm"></span> AI optimizing...';
             this.disabled = true;
             const trends = await updateExternalTrends();
-            const keywords = extractKeywords(input);
-            const matched = findMatchingCreators(keywords, 3);
 
-            setTimeout(() => {
-                const analysis = analyzeText(input, trends);
-                const tips = generateTips(analysis, input);
-                let bestCat = 'TikTok',
-                    catScore = 0;
-                for (const cat of ['tiktok', 'instagram', 'youtube']) {
-                    const creators = getTopByCategory(cat);
-                    let s = 0;
-                    for (const c of creators) {
-                        const text = (c.desc + ' ' + c.name).toLowerCase();
-                        for (const kw of keywords) { if (text.includes(kw)) s += 2; }
-                    }
-                    if (s > catScore) { catScore = s;
-                        bestCat = cat.charAt(0).toUpperCase() + cat.slice(1); }
+            try {
+                const res = await fetch('/api/ai-tools', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tool: 'optimize', content: input, trends })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const output = document.getElementById('optimizeOutput');
+                    const results = document.getElementById('optimizeResults');
+                    results.innerHTML = data.tips.map((t, i) =>
+                        `<div class="result-item">${i+1}. ${sanitizeHTML(t)}</div>`
+                    ).join('');
+                    output.classList.add('show');
+                    showToast('🚀 Optimization complete!', 'success');
+                } else {
+                    showToast('❌ ' + data.error, 'error');
                 }
-                let extra = '';
-                if (analysis.hasFlagged) extra =
-                    `🚫 Inappropriate content: ${analysis.flagged.join(', ')}. Revise to avoid being flagged.`;
-                else if (trends.length && analysis.trendMatch === 0) extra =
-                    `🌐 Leverage trending: ${trends.slice(0,3).join(', ')}`;
-                else if (trends.length && analysis.trendMatch > 0) extra =
-                    `🔥 Matches ${analysis.trendMatch} trending topic(s)!`;
-
-                let html = tips.map((t, i) =>
-                    `<div class="result-item">${i+1}. ${t.icon} ${sanitizeHTML(t.text)}</div>`
-                ).join('');
-                if (extra) html += `<div class="result-item">✨ ${sanitizeHTML(extra)}</div>`;
-                html +=
-                    `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--text-tertiary);">
-                    📊 Optimized for <span class="highlight">${bestCat}</span>${matched.length ? ` • Top match: ${matched[0].name}` : ''}${analysis.hasFlagged ? ' ⚠️ Flagged content' : ''}${trends.length ? ' 🌐 Trends integrated' : ''}
-                </div>`;
-                optimizeResults.innerHTML = html;
-                optimizeOutput.classList.add('show');
-                this.innerHTML = '<i class="fas fa-rocket"></i> Optimize Content';
-                this.disabled = false;
-                if (analysis.hasFlagged) showToast('🚫 Inappropriate language detected!', 'warning');
-                else showToast('🚀 Optimized for ' + bestCat, 'success');
-            }, 1400);
+            } catch (e) {
+                showToast('❌ API error: ' + e.message, 'error');
+            }
+            this.innerHTML = '<i class="fas fa-rocket"></i> Optimize Content';
+            this.disabled = false;
         });
 
         // ================================================================
-        // PROFILE / SUBSCRIPTION
+        // PROFILE / SUBSCRIPTION – REAL PAYMENT INTEGRATION
         // ================================================================
-
         function updateStatsUI() {
             $('statAnalyses').textContent = state.totalAnalyses;
             $('statTrends').textContent = state.trendsFound;
@@ -2408,37 +2047,142 @@
             }
         }
 
+        // ---------- PAYMENT LOGIC ----------
         document.getElementById('subscribeBtn').addEventListener('click', function() {
-            if (state.isPremium) { showToast('🎉 You already have Premium!', 'success'); return; }
-            this.innerHTML = '<span class="spinner-sm"></span> Processing...';
-            this.disabled = true;
-            const status = $('paymentStatus');
-            status.className = 'payment-status show info';
-            status.textContent = '⏳ Opening Telebirr... Please approve payment.';
-            status.style.display = 'block';
-            setTimeout(() => {
-                const success = Math.random() > 0.2;
-                if (success) {
-                    state.isPremium = true;
-                    state.analysesUsed = 0;
-                    updateStatsUI();
-                    status.className = 'payment-status show success';
-                    status.textContent = '✅ Payment successful! Welcome to Premium! 🎉';
-                    this.innerHTML = '<i class="fas fa-check"></i> Premium Active';
-                    this.className = 'btn-success';
-                    this.disabled = false;
-                    showToast('🎉 Welcome to Premium!', 'success');
-                } else {
-                    status.className = 'payment-status show error';
-                    status.textContent = '❌ Payment failed. Please try again.';
-                    this.innerHTML = '<i class="fas fa-crown"></i> Upgrade to Premium – 150 ETB/month';
-                    this.className = 'btn-gold';
-                    this.disabled = false;
-                    showToast('❌ Payment failed. Try again.', 'error');
-                }
-            }, 3000);
+            if (state.isPremium) {
+                showToast('🎉 You already have Premium!', 'success');
+                return;
+            }
+            document.getElementById('paymentModal').style.display = 'flex';
+            document.getElementById('cbeForm').style.display = 'none';
+            document.getElementById('paymentStatusMsg').textContent = '';
+            document.getElementById('cbeStatus').textContent = '';
         });
 
+        // Telebirr – real API call
+        document.getElementById('payTelebirrBtn').addEventListener('click', async function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-sm"></span> Initiating...';
+            const statusMsg = document.getElementById('paymentStatusMsg');
+            statusMsg.textContent = '';
+
+            try {
+                const phone = prompt('Enter your Telebirr phone number (e.g., 2519xxxxxxxx):', '2519');
+                if (!phone || phone.length < 10) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-mobile-alt"></i> Pay with Telebirr (150 ETB)';
+                    statusMsg.textContent = '⚠️ Please enter a valid phone number.';
+                    return;
+                }
+                const fp = getFingerprint();
+                const res = await fetch('/api/telebirr', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fingerprint: fp, phone })
+                });
+                const data = await res.json();
+                if (data.success && data.payment_url) {
+                    localStorage.setItem('telebirr_tx_ref', data.tx_ref);
+                    window.location.href = data.payment_url;
+                } else {
+                    statusMsg.textContent = '❌ ' + (data.error || 'Payment initiation failed. Try again.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-mobile-alt"></i> Pay with Telebirr (150 ETB)';
+                }
+            } catch (err) {
+                statusMsg.textContent = '❌ Error: ' + err.message;
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-mobile-alt"></i> Pay with Telebirr (150 ETB)';
+            }
+        });
+
+        // CBE – show form
+        document.getElementById('payCBEBtn').addEventListener('click', function() {
+            const form = document.getElementById('cbeForm');
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+                form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                form.style.display = 'none';
+            }
+        });
+
+        // Submit CBE screenshot – real API call
+        document.getElementById('submitCBE').addEventListener('click', async function() {
+            const ref = document.getElementById('cbeTransferRef').value.trim();
+            const fileInput = document.getElementById('cbeScreenshot');
+            const file = fileInput.files[0];
+            const status = document.getElementById('cbeStatus');
+
+            if (!ref || !file) {
+                status.textContent = '⚠️ Please fill in reference and select screenshot.';
+                return;
+            }
+            if (!ref.startsWith('ET-CBE-')) {
+                status.textContent = '⚠️ Reference must start with ET-CBE-';
+                return;
+            }
+
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-sm"></span> Uploading...';
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const imageBase64 = e.target.result;
+                try {
+                    const fp = getFingerprint();
+                    const res = await fetch('/api/cbe-upload', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ fingerprint: fp, transferRef: ref, imageBase64 })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        status.innerHTML = '✅ ' + data.message + ' <br> Admin will verify within 24 hours.';
+                        document.getElementById('cbeForm').style.display = 'none';
+                        document.getElementById('paymentModal').style.display = 'none';
+                        setTimeout(fetchUserStatus, 10000);
+                    } else {
+                        status.textContent = '❌ ' + (data.error || 'Upload failed');
+                    }
+                } catch (err) {
+                    status.textContent = '❌ Error: ' + err.message;
+                }
+                document.getElementById('submitCBE').disabled = false;
+                document.getElementById('submitCBE').innerHTML = 'Submit Screenshot';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Check Telebirr return after redirect
+        async function checkTelebirrReturn() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('payment') === 'telebirr-success') {
+                const txRef = localStorage.getItem('telebirr_tx_ref');
+                if (txRef) {
+                    try {
+                        const res = await fetch('/api/telebirr-query', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ txRef })
+                        });
+                        const data = await res.json();
+                        if (data.success && data.status === 'paid') {
+                            showToast('🎉 Payment confirmed! Premium activated.', 'success');
+                            await fetchUserStatus();
+                        } else {
+                            showToast('⏳ Payment still processing. Check later.', 'info');
+                        }
+                    } catch (e) {
+                        showToast('❌ Could not verify payment. Contact support.', 'error');
+                    }
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+        }
+
+        // Reset button
         document.getElementById('resetBtn').addEventListener('click', function() {
             if (confirm('Reset all data?')) {
                 state.analysesUsed = 0;
@@ -2469,7 +2213,6 @@
         // ================================================================
         // MOVIE OVERLAY EVENT LISTENERS
         // ================================================================
-
         document.addEventListener('DOMContentLoaded', function() {
             const overlay = document.getElementById('movieOverlay');
             const closeArea = document.getElementById('closeArea');
@@ -2528,7 +2271,6 @@
         // ================================================================
         // INIT
         // ================================================================
-
         async function initApp() {
             const saved = localStorage.getItem('ethiotrend-theme');
             setTheme(saved || getPreferredTheme());
@@ -2555,6 +2297,9 @@
             startEngagementTicker();
             startAutoRefresh();
 
+            await checkTelebirrReturn();
+            await fetchUserStatus();
+
             showToast('🔥 Welcome to EthioTrend AI — Live engagement ticker active', 'success');
         }
 
@@ -2570,8 +2315,7 @@
         window.toggleTheme = toggleTheme;
 
         initApp();
-        console.log('✅ EthioTrend AI initialized with all enhancements');
+        console.log('✅ EthioTrend AI initialized with all enhancements and merged endpoints');
     </script>
-
 </body>
 </html>
